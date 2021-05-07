@@ -1,2 +1,2 @@
 # cs231n
-hi :)
+hi sidhika, finsam, and avi :)
