@@ -1,2 +1,5 @@
-# cs231n
-hi sidhika, finsam, and avi :)
+# Quick Start
+`./download_data.sh`
+
+# Progress:
+# Starting from scratch, building autoencoder
