@@ -111,7 +111,7 @@ for epoch in range(epochs):
         optimizer.zero_grad()
 
         # compute reconstructions
-        outputs = model(batch_features)
+        outputs = model(batch_features).to(device).float()
 
         # compute training reconstruction loss
         train_loss = criterion(outputs, batch_features)
