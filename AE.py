@@ -19,11 +19,15 @@ class AE(nn.Module):
 
     def forward(self, features):
         activation = self.encoder_hidden_layer(features)
-        activation = torch.relu(activation)
+        activation = torch.leaky_relu(activation)
         code = self.encoder_output_layer(activation)
         code = torch.relu(code)
         activation = self.decoder_hidden_layer(code)
-        activation = torch.relu(activation)
+        activation = torch.leaky_relu(activation)
         activation = self.decoder_output_layer(activation)
-        reconstructed = torch.relu(activation)
+        reconstructed = torch.leaky_relu(activation)
         return reconstructed
+    
+    
+    
+    
