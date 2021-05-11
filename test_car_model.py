@@ -19,6 +19,10 @@ model = torch.load('./car_model.pt')
 model.eval()
 
 
+#  use gpu if available
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
 #for predictions
 name = "car_test_pcloud"
 
