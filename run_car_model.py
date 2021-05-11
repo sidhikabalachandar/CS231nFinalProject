@@ -20,8 +20,8 @@ path_car_test  = "data/shape_net_core_uniform_samples_2048/car_test.txt"
 
 
 
-batch_size = 10
-epochs = 100
+batch_size = 256
+epochs = 500
 learning_rate = 1e-3
 
 
@@ -49,10 +49,14 @@ testloader = torch.utils.data.DataLoader(testset, batch_size=24, shuffle=True, n
 
 model = nn.Sequential(
 
-    nn.Linear(6144, out_features=2048),
+    nn.Linear(6144, out_features=4096),
+    nn.LeakyReLU(),
+    nn.BatchNorm1d(4096),
+    
+    nn.Linear(4096, out_features=2048),
     nn.LeakyReLU(),
     nn.BatchNorm1d(2048),
-    
+
     nn.Linear(2048, out_features=1024),
     nn.LeakyReLU(),
     nn.BatchNorm1d(1024),
@@ -77,9 +81,12 @@ model = nn.Sequential(
     nn.LeakyReLU(),
     nn.BatchNorm1d(2048),
     
-    nn.Linear(2048, out_features=6144),
-)
+    nn.Linear(2048, out_features=4096),
+    nn.LeakyReLU(),
+    nn.BatchNorm1d(4096),
 
+    nn.Linear(4096, out_features=6144),
+)
 
 
 
@@ -87,6 +94,9 @@ model = nn.Sequential(
 
 #  use gpu if available
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+model.to(device)
+
 
 # create an optimizer object
 # Adam optimizer with learning rate 1e-3
@@ -96,8 +106,8 @@ optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 criterion = nn.MSELoss()
 
 
-
-for epoch in range(epochs):
+quick = 1
+for epoch in range(quick):
 
     loss = 0
     for index, (batch_features, _) in enumerate(trainloader):
@@ -111,7 +121,7 @@ for epoch in range(epochs):
         optimizer.zero_grad()
 
         # compute reconstructions
-        outputs = model(batch_features).to(device).float()
+        outputs = model(batch_features)
 
         # compute training reconstruction loss
         train_loss = criterion(outputs, batch_features)
@@ -130,3 +140,6 @@ for epoch in range(epochs):
 
     # display the epoch training loss
     print("epoch : {}/{}, recon loss = {:.8f}".format(epoch + 1, epochs, loss))
+
+
+torch.save(model, './car_model.pt')

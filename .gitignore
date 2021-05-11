@@ -8,3 +8,6 @@ __pycache__/
 
 # Data
 data/
+
+# Pytorch models
+*.pt
