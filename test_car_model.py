@@ -22,7 +22,7 @@ model.eval()
 #for predictions
 name = "car_test_pcloud"
 
-for single_test_feature, single_test_path in tramloader:
+for single_test_feature, single_test_path in testloader:
     input_tensor = single_test_feature.float()         #(128, 6144)
     
     print("input_path:{}".format(single_test_path[0]))
