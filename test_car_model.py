@@ -23,7 +23,7 @@ model.eval()
 name = "car_test_pcloud"
 
 for single_test_feature, single_test_path in testloader:
-    input_tensor = single_test_feature.float()         #(128, 6144)
+    input_tensor = single_test_feature.to(device).float()         #(128, 6144)
     
     print("input_path:{}".format(single_test_path[0]))
     
