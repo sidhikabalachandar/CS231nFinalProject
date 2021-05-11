@@ -44,7 +44,7 @@ for single_test_feature, single_test_path in testloader:
 
     pcd_input = o3d.geometry.PointCloud()
     pcd_input.points = o3d.utility.Vector3dVector(reshape_input_tensor.detach().cpu().numpy())
-    o3d.io.write_point_cloud("./{}_predict_ae.ply".format(name), pcd_input)   
+    o3d.io.write_point_cloud("./{}_original_ae.ply".format(name), pcd_input)   
 
     
     break
