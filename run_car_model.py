@@ -137,8 +137,31 @@ for epoch in range(epochs):
     # compute the epoch training loss
     loss = loss / len(trainloader)
 
-    # display the epoch training loss
-    print("epoch : {}/{}, recon loss = {:.8f}".format(epoch + 1, epochs, loss))
+    with torch.no_grad():
+        val_loss = 0
+        for index, (batch_features, _) in enumerate(valloader):
+            # reshape mini-batch data to [N, 784] matrix
+            # load it to the active device
+
+            batch_features = batch_features.to(device).float()
+
+            # compute reconstructions
+            outputs = model(batch_features)
+
+            # compute training reconstruction loss
+            curr_val_loss = criterion(outputs, batch_features)
+
+            # add the mini-batch training loss to epoch loss
+            val_loss += curr_val_loss.item()
+
+        # compute the epoch training loss
+        val_loss = val_loss / len(valloader)
+    
+    # display the epoch training and validatation loss
+    print("epoch : {}/{}, train loss = {:.4f}, val loss = {:.4f}".format(epoch + 1, epochs, loss, val_loss))
+    
 
 
+    
+    
 torch.save(model, './car_model.pt')
