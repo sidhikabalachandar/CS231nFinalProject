@@ -105,7 +105,9 @@ optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 # mean-squared error loss
 criterion = nn.MSELoss()
 
-
+cur_best_loss = 10 #really big number
+cur_best_epoch = 0
+cur_best_model = None
 for epoch in range(epochs):
 
     loss = 0
@@ -160,8 +162,13 @@ for epoch in range(epochs):
     # display the epoch training and validatation loss
     print("epoch : {}/{}, train loss = {:.4f}, val loss = {:.4f}".format(epoch + 1, epochs, loss, val_loss))
     
-
-
+    if(epoch % 100 == 0):
+        torch.save(model, "./{}_car_model.pt".format(epoch))
     
-    
-torch.save(model, './car_model.pt')
+    if(val_loss < cur_best_loss):
+        cur_best_loss = val_loss
+        cur_best_epoch = epoch
+        cur_best_model = model
+
+torch.save(cur_best_model, './best_{}_car_model.pt'.format(cur_best_epoch))
+
