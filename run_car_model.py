@@ -10,7 +10,8 @@ from PointCloudDataset import PointCloudDataset
 
 
 
-
+path_car_loss = "./car_loss.txt"
+file_handle = open(path_car_loss, "a")
 
 path_car_train = "data/shape_net_core_uniform_samples_2048/car_train.txt"
 path_car_val   = "data/shape_net_core_uniform_samples_2048/car_val.txt"
@@ -105,12 +106,13 @@ optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 # mean-squared error loss
 criterion = nn.MSELoss()
 
-cur_best_loss = 10 #really big number
+cur_best_val_loss = 10 #really big number
+cur_best_train_loss = 10 #really big number
 cur_best_epoch = 0
 cur_best_model = None
 for epoch in range(epochs):
 
-    loss = 0
+    train_loss = 0
     for index, (batch_features, _) in enumerate(trainloader):
         # reshape mini-batch data to [N, 784] matrix
         # load it to the active device
@@ -125,19 +127,19 @@ for epoch in range(epochs):
         outputs = model(batch_features)
 
         # compute training reconstruction loss
-        train_loss = criterion(outputs, batch_features)
+        curr_train_loss = criterion(outputs, batch_features)
 
         # compute accumulated gradients
-        train_loss.backward()
+        curr_train_loss.backward()
 
         # perform parameter update based on current gradients
         optimizer.step()
 
         # add the mini-batch training loss to epoch loss
-        loss += train_loss.item()
+        train_loss += curr_train_loss.item()
 
     # compute the epoch training loss
-    loss = loss / len(trainloader)
+    train_loss = train_loss / len(trainloader)
 
     with torch.no_grad():
         val_loss = 0
@@ -160,15 +162,23 @@ for epoch in range(epochs):
         val_loss = val_loss / len(valloader)
     
     # display the epoch training and validatation loss
-    print("epoch : {}/{}, train loss = {:.4f}, val loss = {:.4f}".format(epoch + 1, epochs, loss, val_loss))
+    epoch_str = "epoch : {}/{}, train loss = {:.4f}, val loss = {:.4f}".format(epoch + 1, epochs, train_loss, val_loss)
+    print(epoch_str)
+    file_handle.write(epoch_str)
     
     if(epoch % 100 == 0):
         torch.save(model, "./{}_car_model.pt".format(epoch))
     
     if(val_loss < cur_best_loss):
-        cur_best_loss = val_loss
-        cur_best_epoch = epoch
+        cur_best_val_loss = val_loss
+        cur_best_train_loss = train_loss
+        cur_best_epoch = epoch + 1
         cur_best_model = model
 
+        
+#Save and print best model
 torch.save(cur_best_model, './best_{}_car_model.pt'.format(cur_best_epoch))
+file_handle.close()
 
+best_epoch_str = "best model found on epoch : {}/{}, train loss = {:.4f}, val loss = {:.4f}".format(cur_best_epoch, epochs, cur_best_train_loss, cur_best_val_loss)
+print(best_epoch_str)
