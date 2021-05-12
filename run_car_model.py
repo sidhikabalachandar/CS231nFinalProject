@@ -106,8 +106,7 @@ optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 criterion = nn.MSELoss()
 
 
-quick = 1
-for epoch in range(quick):
+for epoch in range(epochs):
 
     loss = 0
     for index, (batch_features, _) in enumerate(trainloader):
