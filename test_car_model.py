@@ -15,7 +15,7 @@ testset = PointCloudDataset(path_to_data = path_car_test)
 testloader = torch.utils.data.DataLoader(testset, batch_size=24, shuffle=True, num_workers=2)
 
 
-model = torch.load('./car_model.pt')
+model = torch.load('./best_496_car_model.pt')
 model.eval()
 
 

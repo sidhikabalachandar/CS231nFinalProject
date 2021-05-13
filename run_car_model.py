@@ -169,7 +169,7 @@ for epoch in range(epochs):
     if(epoch % 100 == 0):
         torch.save(model, "./{}_car_model.pt".format(epoch))
     
-    if(val_loss < cur_best_loss):
+    if(val_loss < cur_best_val_loss):
         cur_best_val_loss = val_loss
         cur_best_train_loss = train_loss
         cur_best_epoch = epoch + 1
