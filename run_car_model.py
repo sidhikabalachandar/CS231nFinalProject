@@ -164,7 +164,7 @@ for epoch in range(epochs):
     # display the epoch training and validatation loss
     epoch_str = "epoch : {}/{}, train loss = {:.4f}, val loss = {:.4f}".format(epoch + 1, epochs, train_loss, val_loss)
     print(epoch_str)
-    file_handle.write(epoch_str)
+    file_handle.write(epoch_str + "\n")
     
     if(epoch % 100 == 0):
         torch.save(model, "./{}_car_model.pt".format(epoch))
