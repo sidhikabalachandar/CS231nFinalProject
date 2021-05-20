@@ -16,16 +16,20 @@ def main():
     
     #find device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    
+    input_tensor = input_tensor.to(device).float()
+
     #load model
     model = torch.load('./best_496_car_model.pt')
     model.eval()
-    
+   
+    input_tensor = torch.reshape(input_tensor, (1,input_tensor.size()[0]))
+
     #Print tensors
     x = input_tensor
+    print(x.size())
     for l in list(model.children()):
         x = l(x)
-        print(x)
+        print(x.size())
     
     
 
