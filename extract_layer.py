@@ -13,13 +13,16 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 def linear_interpolate(x, y, N):
-    t_space = np.linspace(x, y, N)
+    t_space = np.linspace(x.detach().cpu().numpy(), y.detach().cpu().numpy(), N)
+    t_space = torch.from_numpy(t_space).to(device).float()
     return t_space
 
 def extract_latent_representation(folder_name, path_pc_1, path_pc_2):
-    
+   
+    print("On current folder:{}".format(folder_name))
+
     # Create folder
-    if(!os.path.exists(folder_name)):
+    if(not os.path.exists(folder_name)):
         os.mkdir(folder_name)
     
     # Load point cloud
@@ -29,8 +32,8 @@ def extract_latent_representation(folder_name, path_pc_1, path_pc_2):
     pc_2_numpy = np.asarray(pc_2.points).reshape(-1)
     
     #Convert point cloud to tensor
-    torch_pc_1 = torch.from_numpy(pc_1)
-    torch_pc_2 = torch.from_numpy(pc_2)
+    torch_pc_1 = torch.from_numpy(pc_1_numpy)
+    torch_pc_2 = torch.from_numpy(pc_2_numpy)
     
     #Get device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -63,7 +66,7 @@ def extract_latent_representation(folder_name, path_pc_1, path_pc_2):
         torch_intemediate_pc = torch_intemediate_pc.reshape(2048, 3)
         pcd_output = o3d.geometry.PointCloud()
         pcd_output.points = o3d.utility.Vector3dVector(torch_intemediate_pc.detach().cpu().numpy())
-        o3d.io.write_point_cloud(".{}/time_{}.ply".format(folder_name, index), pcd_output)
+        o3d.io.write_point_cloud("{}/time_{}.ply".format(folder_name, index), pcd_output)
     
 if __name__ == "__main__":
     #Train - Train
