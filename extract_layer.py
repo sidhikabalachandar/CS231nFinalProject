@@ -49,9 +49,10 @@ def extract_latent_representation(folder_name, path_pc_1, path_pc_2):
         torch_pc_1 = layer(torch_pc_1)
         torch_pc_2 = layer(torch_pc_2)
     
+
     #Linearly interpolate between 10 points
     Points = 10
-    t_space = linear_interpolate(torch_pc_1, torch_pc_1, Points)
+    t_space = linear_interpolate(torch_pc_1, torch_pc_2, Points)
     
     #Convert latent representation to full point cloud and save 
     for index, t in enumerate(t_space):
@@ -73,6 +74,7 @@ if __name__ == "__main__":
     pc1_train_1 = "data/shape_net_core_uniform_samples_2048/02958343/abdbd823f44be240f69e2f67d9a307fc.ply"
     pc1_train_2 = "data/shape_net_core_uniform_samples_2048/02958343/892266d574578810afe717997470b28d.ply"
     extract_latent_representation("train_train", pc1_train_1, pc1_train_2)
+   
     
     #Train - Test
     pc2_train_1 = "data/shape_net_core_uniform_samples_2048/02958343/abdbd823f44be240f69e2f67d9a307fc.ply"
