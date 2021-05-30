@@ -84,7 +84,7 @@ def main():
 #             # compute accumulated gradients
 #             curr_train_loss.backward()
 
-            dist1, dist2, _, _ = chamLoss(torch.reshape(outputs, (batch_size, num_points, 3))
+            dist1, dist2, _, _ = chamLoss(torch.reshape(outputs, (batch_size, num_points, 3)),
                                           torch.reshape(batch_features, (batch_size, num_points, 3)))
             
             curr_train_loss = torch.mean(torch.sum(dist1 + dist2, axis = 1))
@@ -114,7 +114,7 @@ def main():
 #                 curr_val_loss = criterion(outputs, batch_features)
 
 
-                dist1, dist2, _, _ = chamLoss(torch.reshape(outputs, (batch_size, num_points, 3))
+                dist1, dist2, _, _ = chamLoss(torch.reshape(outputs, (batch_size, num_points, 3)),
                                               torch.reshape(batch_features, (batch_size, num_points, 3)))
 
                 curr_val_loss = torch.mean(torch.sum(dist1 + dist2, axis = 1))
