@@ -11,3 +11,6 @@ shape_net_core_uniform_samples_2048/
 
 # Pytorch models
 *.pt
+
+# OLDCODE
+OLDCODE/
