@@ -6,6 +6,9 @@ from PointCloudDataset import PointCloudDataset
 import argparse
 from AE_models.baseline import baseline
 
+# Get Chamfer Distance
+import ChamferDistancePytorch.chamfer3D.dist_chamfer_3D as chamfer
+
 
 # Global
 saved_models = "saved_models"
@@ -36,7 +39,7 @@ def main():
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size, shuffle=True, num_workers=2)
 
     valset = PointCloudDataset(path_to_data = args.val_path)
-    valloader = torch.utils.data.DataLoader(valset, batch_size=128, shuffle=True, num_workers=2)
+    valloader = torch.utils.data.DataLoader(valset, batch_size=batch_size, shuffle=True, num_workers=2)
 
     # create a model from `AE` autoencoder class
     # load it to the specified device, either gpu or cpu
@@ -50,8 +53,11 @@ def main():
     # Adam optimizer with learning rate 1e-3
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
-    # mean-squared error loss
-    criterion = nn.MSELoss()
+    # Trying Chamfer Distance
+#     # mean-squared error loss
+#     criterion = nn.MSELoss()
+    criterion = chamfer.chamfer_3DDist()
+    
 
     cur_best_val_loss = 10 #really big number
     cur_best_train_loss = 10 #really big number
@@ -72,10 +78,16 @@ def main():
             # compute reconstructions
             outputs = model(batch_features)
 
-            # compute training reconstruction loss
-            curr_train_loss = criterion(outputs, batch_features)
+#             # compute training reconstruction loss
+#             curr_train_loss = criterion(outputs, batch_features)
+            
+#             # compute accumulated gradients
+#             curr_train_loss.backward()
 
-            # compute accumulated gradients
+            dist1, dist2, _, _ = chamLoss(torch.reshape(outputs, (batch_size, num_points, 3))
+                                          torch.reshape(batch_features, (batch_size, num_points, 3)))
+            
+            curr_train_loss = torch.mean(torch.sum(dist1 + dist2, axis = 1))
             curr_train_loss.backward()
 
             # perform parameter update based on current gradients
@@ -95,11 +107,18 @@ def main():
 
                 batch_features = batch_features.to(device).float()
 
-                # compute reconstructions
-                outputs = model(batch_features)
+#                 # compute reconstructions
+#                 outputs = model(batch_features)
 
-                # compute training reconstruction loss
-                curr_val_loss = criterion(outputs, batch_features)
+#                 # compute training reconstruction loss
+#                 curr_val_loss = criterion(outputs, batch_features)
+
+
+                dist1, dist2, _, _ = chamLoss(torch.reshape(outputs, (batch_size, num_points, 3))
+                                              torch.reshape(batch_features, (batch_size, num_points, 3)))
+
+                curr_val_loss = torch.mean(torch.sum(dist1 + dist2, axis = 1))
+                curr_val_loss.backward()
 
                 # add the mini-batch training loss to epoch loss
                 val_loss += curr_val_loss.item()
