@@ -6,7 +6,6 @@ import argparse
 from AE_models/baseline import baseline
 
 def main():
-    
     # Parse Arguments
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--train_path', required=True,  help='Path to training .txt file.')
