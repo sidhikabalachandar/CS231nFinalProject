@@ -5,7 +5,12 @@ from PointCloudDataset import PointCloudDataset
 import argparse
 from AE_models/baseline import baseline
 
+
+# Global
+saved_models = "saved_models"
+
 def main():
+    
     # Parse Arguments
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--train_path', required=True,  help='Path to training .txt file.')
@@ -13,7 +18,11 @@ def main():
     parser.add_argument('-n', '--folder_name', required=True, help='Name of folder to save loss(.txt) and model(.pt) in.')
     args = parser.parse_args()
     
-    path_loss = "./saved_models/{}_losses.txt".format(args.folder_name)
+    
+    folder_name = args.folder_name
+    os.makedirs(os.path.join(saved_models, folder_name), exist_ok=True)
+    path_loss = os.path.join(saved_models, folder_name, 'losses.txt')
+    
     file_handle = open(path_loss, "a")
     batch_size = 256
     epochs = 500
@@ -112,7 +121,7 @@ def main():
 
 
     #Save and print best model
-    torch.save(cur_best_model, './best_{}_car_model.pt'.format(cur_best_epoch))
+    torch.save(cur_best_model, '{}/best_{}_car_model.pt'.format(os.path.join(saved_models, folder_name), cur_best_epoch))
     file_handle.close()
     best_epoch_str = "best model found on epoch : {}/{}, train loss = {:.4f}, val loss = {:.4f}".format(cur_best_epoch, epochs, cur_best_train_loss, cur_best_val_loss)
     print(best_epoch_str)
