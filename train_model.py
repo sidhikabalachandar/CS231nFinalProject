@@ -113,7 +113,7 @@ def main():
         file_handle.write(epoch_str + "\n")
 
         if(epoch % 100 == 0):
-            torch.save(model, "./{}_car_model.pt".format(epoch))
+            torch.save(model, "{}/{}.pt".format(os.path.join(saved_models, folder_name), epoch))
 
         if(val_loss < cur_best_val_loss):
             cur_best_val_loss = val_loss
@@ -123,7 +123,7 @@ def main():
 
 
     #Save and print best model
-    torch.save(cur_best_model, '{}/best_{}_car_model.pt'.format(os.path.join(saved_models, folder_name), cur_best_epoch))
+    torch.save(cur_best_model, '{}/best_{}.pt'.format(os.path.join(saved_models, folder_name), cur_best_epoch))
     file_handle.close()
     best_epoch_str = "best model found on epoch : {}/{}, train loss = {:.4f}, val loss = {:.4f}".format(cur_best_epoch, epochs, cur_best_train_loss, cur_best_val_loss)
     print(best_epoch_str)
