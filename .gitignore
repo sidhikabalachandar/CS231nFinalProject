@@ -7,7 +7,7 @@ __pycache__/
 *.ipynb_checkpoints
 
 # Data
-data/
+shape_net_core_uniform_samples_2048/
 
 # Pytorch models
 *.pt
