@@ -58,8 +58,8 @@ AE_models folder -- folder with different AE models
 
 **Create test, val, train splits:**
 ```
-python create_splits.py -c guitar bus 
-						-n guitar_bus
+python create_splits.py -c guitar bus \
+			-n guitar_bus
 ```
 - Creates folder 
 	- splits/guitar_bus
@@ -70,9 +70,9 @@ python create_splits.py -c guitar bus
 
 **Train model:**
 ```
-python train_model.py -t splits/guitar_bus/train.txt 
-					  -v splits/guitar_bus/val.txt 
-					  -n train_guitar_bus
+python train_model.py -t splits/guitar_bus/train.txt \
+		      -v splits/guitar_bus/val.txt \
+		      -n train_guitar_bus
 ```
 - Creates folder 
 	- saved_models/train_guitar_bus
@@ -84,8 +84,8 @@ python train_model.py -t splits/guitar_bus/train.txt
 **Test model:**
 ```
 python test_model.py -t splits/guitar_bus/test.txt \
-					 -m saved_models/train_guitar_bus/best_5.pt \
-					 -n test_guitar_bus
+		     -m saved_models/train_guitar_bus/best_5.pt \
+		     -n test_guitar_bus
 ```
 - Creates folder 
 	- saved_models/predicted
@@ -95,10 +95,10 @@ python test_model.py -t splits/guitar_bus/test.txt \
 
 **Test model:**
 ```
-python interpolate_layer.py -pc1 shape_net_core_uniform_samples_2048/03467517/3d65570b55933c86ec7e7dbd8120b3cb.ply 
-							-pc2 shape_net_core_uniform_samples_2048/03467517/10b65379796e96091c86d29189611a06.ply 
-							-m saved_models/train_guitar_bus/best_5.pt 
-							-n interpolate_guitar_bus
+python interpolate_layer.py -pc1 shape_net_core_uniform_samples_2048/03467517/3d65570b55933c86ec7e7dbd8120b3cb.ply \
+			    -pc2 shape_net_core_uniform_samples_2048/03467517/10b65379796e96091c86d29189611a06.ply \
+			    -m saved_models/train_guitar_bus/best_5.pt \
+			    -n interpolate_guitar_bus
 ```
 - Creates folders 
 	- interpolation/output_prefix/train_train
