@@ -84,8 +84,8 @@ def main():
 #             # compute accumulated gradients
 #             curr_train_loss.backward()
 
-            dist1, dist2, _, _ = criterion(torch.reshape(outputs, (batch_size, num_points, 3)),
-                                          torch.reshape(batch_features, (batch_size, num_points, 3)))
+            dist1, dist2, _, _ = criterion(torch.reshape(outputs, (-1, num_points, 3)),
+                                          torch.reshape(batch_features, (-1, num_points, 3)))
             
             curr_train_loss = torch.mean(torch.sum(dist1 + dist2, axis = 1))
             curr_train_loss.backward()
@@ -114,11 +114,10 @@ def main():
 #                 curr_val_loss = criterion(outputs, batch_features)
 
 
-                dist1, dist2, _, _ = criterion(torch.reshape(outputs, (batch_size, num_points, 3)),
-                                              torch.reshape(batch_features, (batch_size, num_points, 3)))
+                dist1, dist2, _, _ = criterion(torch.reshape(outputs, (-1, num_points, 3)),
+                                              torch.reshape(batch_features, (-1, num_points, 3)))
 
                 curr_val_loss = torch.mean(torch.sum(dist1 + dist2, axis = 1))
-                curr_val_loss.backward()
 
                 # add the mini-batch training loss to epoch loss
                 val_loss += curr_val_loss.item()

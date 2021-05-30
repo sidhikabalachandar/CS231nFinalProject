@@ -3,3 +3,8 @@ epoch : 2/5, train loss = 0.5903, val loss = 0.1853
 epoch : 3/5, train loss = 0.1569, val loss = 0.1115
 epoch : 4/5, train loss = 0.0950, val loss = 0.0776
 epoch : 5/5, train loss = 0.0693, val loss = 0.0576
+epoch : 1/5, train loss = 1633.2485, val loss = 1651.1320
+epoch : 2/5, train loss = 1724.0956, val loss = 695.8937
+epoch : 3/5, train loss = 458.5259, val loss = 330.8149
+epoch : 4/5, train loss = 244.2649, val loss = 205.1509
+epoch : 5/5, train loss = 154.7352, val loss = 148.3182
