@@ -1,5 +1,5 @@
-epoch : 1/5, train loss = 0.4567, val loss = 0.3795
-epoch : 2/5, train loss = 0.4688, val loss = 0.2057
-epoch : 3/5, train loss = 0.1478, val loss = 0.0959
-epoch : 4/5, train loss = 0.0811, val loss = 0.0667
-epoch : 5/5, train loss = 0.0580, val loss = 0.0486
+epoch : 1/5, train loss = 0.3890, val loss = 0.6729
+epoch : 2/5, train loss = 0.5903, val loss = 0.1853
+epoch : 3/5, train loss = 0.1569, val loss = 0.1115
+epoch : 4/5, train loss = 0.0950, val loss = 0.0776
+epoch : 5/5, train loss = 0.0693, val loss = 0.0576

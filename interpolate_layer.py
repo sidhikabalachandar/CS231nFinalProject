@@ -22,9 +22,9 @@ def extract_latent_representation():
 
     optional arguments:
       -h, --help            show this help message and exit
-      -p1 PATH_PC_1, --path_pc_1 PATH_PC_1
+      -pc1 PATH_PC_1, --path_pc_1 PATH_PC_1
                             Path to point cloud 1 as .ply.
-      -p2 PATH_PC_2, --path_pc_2 PATH_PC_2
+      -pc2 PATH_PC_2, --path_pc_2 PATH_PC_2
                             Path to point cloud 1 as .ply.
       -m MODEL_NAME, --model_name MODEL_NAME
                             Path to model (.pt).
@@ -34,8 +34,8 @@ def extract_latent_representation():
     
     # Parse Arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument('-p1', '--path_pc_1', required=True, help = 'Path to point cloud 1 as .ply.')
-    parser.add_argument('-p2', '--path_pc_2', required=True, help = 'Path to point cloud 1 as .ply.')
+    parser.add_argument('-pc1', '--path_pc_1', required=True, help = 'Path to point cloud 1 as .ply.')
+    parser.add_argument('-pc2', '--path_pc_2', required=True, help = 'Path to point cloud 1 as .ply.')
     parser.add_argument('-m', '--model_name',  required=True, help = 'Path to model (.pt).')
     parser.add_argument('-n', '--folder_name',  required=True, help = 'Name of folder to save interpolation in.')
     args = parser.parse_args()
@@ -93,7 +93,8 @@ def extract_latent_representation():
         torch_intemediate_pc = torch_intemediate_pc.reshape(2048, 3)
         pcd_output = o3d.geometry.PointCloud()
         pcd_output.points = o3d.utility.Vector3dVector(torch_intemediate_pc.detach().cpu().numpy())
-        o3d.io.write_point_cloud("{}/time_{}.ply".format(folder_name, index), pcd_output)
-    
+        #o3d.io.write_point_cloud("{}/time_{}.ply".format(folder_name, index), pcd_output)
+        o3d.io.write_point_cloud(os.path.join(interpolation_folder, folder_name, "time_{}.ply".format(index)), pcd_output)
+
 if __name__ == "__main__":
     extract_latent_representation()
