@@ -68,9 +68,9 @@ class baseline(nn.Module):
         enc_3 = self.enc_bn3(F.leaky_relu(self.enc_lin3(enc_2)))
         enc_4 = self.enc_bn4(F.leaky_relu(self.enc_lin4(enc_3)))
         enc_5 = self.enc_bn5(F.leaky_relu(self.enc_lin5(enc_4)))
-        dec_1 = self.enc_bn1(F.leaky_relu(self.enc_lin1(enc_5)))
-        dec_2 = self.enc_bn2(F.leaky_relu(self.enc_lin2(dec_1)))
-        dec_3 = self.enc_bn3(F.leaky_relu(self.enc_lin3(dec_2)))
-        dec_4 = self.enc_bn4(F.leaky_relu(self.enc_lin4(dec_3)))
-        dec_5 = self.enc_bn5(F.leaky_relu(self.enc_lin5(dec_4)))
-        return dec_5
+        dec_6 = self.dec_bn6(F.leaky_relu(self.dec_lin6(enc_5)))
+        dec_7 = self.dec_bn7(F.leaky_relu(self.dec_lin7(dec_6)))
+        dec_8 = self.dec_bn8(F.leaky_relu(self.dec_lin8(dec_7)))
+        dec_9 = self.dec_bn9(F.leaky_relu(self.dec_lin9(dec_8)))
+        dec_10 = self.dec_lin10(dec_9)
+        return dec_10
