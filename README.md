@@ -54,6 +54,7 @@ AE_models folder -- folder with different AE models
 # Quick Start
 
 **Get data:**
+
 `./download_data.sh`
 
 **Create test, val, train splits:**
