@@ -1,9 +1,10 @@
+import os
 import torch
 import torch.nn as nn
 import torch.optim as optim
 from PointCloudDataset import PointCloudDataset
 import argparse
-from AE_models/baseline import baseline
+from AE_models.baseline import baseline
 
 
 # Global
@@ -25,7 +26,8 @@ def main():
     
     file_handle = open(path_loss, "a")
     batch_size = 256
-    epochs = 500
+    #epochs = 500
+    epochs = 5
     learning_rate = 1e-3
     num_points = 2048
 
