@@ -1,80 +1,3 @@
-# import os
-
-# path_to_car = "data/shape_net_core_uniform_samples_2048/02958343"
-
-# split_train = .90
-# split_val   = .09
-# split_test  = .01
-
-# path_to_train = "data/shape_net_core_uniform_samples_2048/car_train.txt"
-# path_to_val   = "data/shape_net_core_uniform_samples_2048/car_val.txt"
-# path_to_test  = "data/shape_net_core_uniform_samples_2048/car_test.txt"
-
-# train_files = []
-# val_files   = []
-# test_files  = []
-
-# # for subdir in os.listdir(path_to_car):
-
-# subdir_path = os.listdir(os.path.join(path_to_car))
-# subdir_path = [f for f in subdir_path if f[-3:] == 'ply']
-
-# num_shapes  = len(subdir_path)
-# count_train = int(num_shapes*split_train)
-# count_val   = int(num_shapes*split_val)
-# count_test  = num_shapes - count_train - count_val
-
-# train = []
-# val = []
-# test = []
-
-
-# for file in subdir_path:
-#     file = os.path.join(path_to_car, file) + '\n'
-#     if len(train) <= count_train:
-#         train.append(file)
-#     elif len(val) <= count_val:
-#         val.append(file)
-#     else:
-#         test.append(file)
-
-# train_files.extend(train)
-# val_files.extend(val)
-# test_files.extend(test)
-                      
-# with open(path_to_train, 'w') as train_file:
-#     train_file.writelines(train_files)
-    
-# with open(path_to_val, 'w') as val_file:
-#     val_file.writelines(val_files)
-    
-# with open(path_to_test, 'w') as test_file:
-#     test_file.writelines(test_files)
-
-# len_total_files = len(train_files) + len(val_files) + len(test_files)
-# p_train = len(train_files)/len_total_files
-# p_val   = len(val_files)/len_total_files
-# p_test  = len(test_files)/len_total_files
-
-# print("p_train:{}, p_val:{}, p_test:{}".format(p_train, p_val, p_test))
-
-
-
-
-
-
-
-
-
-
-# create_splits.py -- split data into train, val, and test
-#                -- -- previously createCarTrainValTest.py
-#                -- -- inputs: file with list of human readable objects to include in data, name
-#                -- -- outputs: splits/name/file of list of paths to training examples
-#                               splits/name/file of list of paths to val examples
-#                               splits/name/file of list of paths to test examples
-
-
 import os
 import random
 import argparse
@@ -118,12 +41,24 @@ def snc_category_to_synth_id():
 
 
 def main():
+    '''
+    usage: create_splits.py [-h] -c CATEGORY [CATEGORY ...] -n FOLDER_NAME
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      -c CATEGORY [CATEGORY ...], --category CATEGORY [CATEGORY ...]
+                            List of categories.
+      -n FOLDER_NAME, --folder_name FOLDER_NAME
+                            Name of solder to save splits in
+    '''
     
     # Parse Arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--category', nargs='+', default=[], required=True, help='pass in a list ')
-    parser.add_argument('-n', '--folder_name', required=True, help='required!')
+    parser.add_argument('-c', '--category', nargs='+', default=[], required=True, help='List of categories.')
+    parser.add_argument('-n', '--folder_name', required=True, help='Name of solder to save splits in.')
     args = parser.parse_args()
+    
+    folder_name = args.folder_name
     
     # Map category to synth_id
     category_to_synth_id = snc_category_to_synth_id()
@@ -133,12 +68,12 @@ def main():
     
     for object_type in args.category:
         synth_id = category_to_synth_id[object_type]
-        paths_to_input_category.append(os.join.path(data_path, synth_id))
+        paths_to_input_category.append(os.path.join(data_path, synth_id))
 
     # Get paths to train/val/test folders (ex: splits/name/train.txt)
-    path_to_train = os.path.join(split_folder, args.folder_name, "train.txt")
-    path_to_val   = os.path.join(split_folder, args.folder_name, "val.txt")
-    path_to_test  = os.path.join(split_folder, args.folder_name, "test.txt")
+    path_to_train = os.path.join(split_folder, folder_name, "train.txt")
+    path_to_val   = os.path.join(split_folder, folder_name, "val.txt")
+    path_to_test  = os.path.join(split_folder, folder_name, "test.txt")
     
     train_files, val_files, test_files = [], [], []
     
@@ -174,6 +109,7 @@ def main():
     
 
     # Save paths to train/val/test
+    os.makedirs(os.path.join(split_folder, folder_name), exist_ok=True)
     with open(path_to_train, 'w') as train_file:
         train_file.writelines(train_files)
 
@@ -189,8 +125,11 @@ def main():
     cnt_val   = len(val_files)
     cnt_test  = len(test_files)
 
-    print("Splits saved in: path_to_train:{}, path_to_val:{}, path_to_test:{}".format(path_to_train, path_to_val, path_to_test))
-    print("cnt_train:{}, cnt_val:{}, cnt_test:{}".format(p_train, p_val, p_test))
+    print("""Splits saved in: \n \
+           path_to_train:{} --- {} \n \
+           path_to_val:{} --- {} \n \
+           path_to_test:{} --- {} """.format(path_to_train, cnt_train, path_to_val, cnt_val, path_to_test, cnt_test))
+    
     
 
 if __name__ == "__main__":
