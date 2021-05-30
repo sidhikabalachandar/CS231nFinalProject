@@ -3,7 +3,6 @@ import random
 import argparse
 
 
-
 # Globals
 split_folder = "splits"
 data_path    = "shape_net_core_uniform_samples_2048"
@@ -51,11 +50,10 @@ def main():
       -n FOLDER_NAME, --folder_name FOLDER_NAME
                             Name of solder to save splits in
     '''
-    
     # Parse Arguments
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--category', nargs='+', default=[], required=True, help='List of categories.')
-    parser.add_argument('-n', '--folder_name', required=True, help='Name of solder to save splits in.')
+    parser.add_argument('-n', '--folder_name', required=True, help='Name of folder to save splits in.')
     args = parser.parse_args()
     
     folder_name = args.folder_name
