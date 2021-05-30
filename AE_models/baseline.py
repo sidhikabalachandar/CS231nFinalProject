@@ -8,55 +8,55 @@ class baseline(nn.Module):
             in_features=input_size, out_features=4096
         )
         self.enc_bn1 = nn.BatchNorm1d(
-            in_features=4096
+            num_features=4096
         )
         self.enc_lin2 = nn.Linear(
             in_features=4096, out_features=2048
         )
         self.enc_bn2 = nn.BatchNorm1d(
-            in_features=2048
+            num_features=2048
         )
         self.enc_lin3 = nn.Linear(
             in_features=2048, out_features=1024
         )
         self.enc_bn3 = nn.BatchNorm1d(
-            in_features=1024
+            num_features=1024
         )
         self.enc_lin4 = nn.Linear(
             in_features=1024, out_features=128
         )
         self.enc_bn4 = nn.BatchNorm1d(
-            in_features=128
+            num_features=128
         )
         self.enc_lin5 = nn.Linear(
             in_features=128, out_features=128
         )
         self.enc_bn5 = nn.BatchNorm1d(
-            in_features=128
+            num_features=128
         )
         self.dec_lin6 = nn.Linear(
             in_features=128, out_features=128
         )
         self.dec_bn6 = nn.BatchNorm1d(
-            in_features=128
+            num_features=128
         )
         self.dec_lin7 = nn.Linear(
             in_features=128, out_features=1024
         )
         self.dec_bn7 = nn.BatchNorm1d(
-            in_features=1024
+            num_features=1024
         )
         self.dec_lin8 = nn.Linear(
             in_features=1024, out_features=2048
         )
         self.dec_bn8 = nn.BatchNorm1d(
-            in_features=2048
+            num_features=2048
         )
         self.dec_lin9 = nn.Linear(
             in_features=2048, out_features=4096
         )
         self.dec_bn9 = nn.BatchNorm1d(
-            in_features=4096
+            num_features=4096
         )
         self.dec_lin10 = nn.Linear(
             in_features=4096, out_features=6144
