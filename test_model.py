@@ -1,8 +1,12 @@
+import os
 import torch
 import open3d as o3d
 from PointCloudDataset import PointCloudDataset
 import argparse
 
+
+# Globals
+predicted_folder = "predicted"
 
 def main():
     # Parse Arguments
@@ -13,6 +17,7 @@ def main():
                         help='Name of folder to save loss(.txt) and model(.pt) in.')
     args = parser.parse_args()
 
+    folder_name = args.folder_name;
     testset = PointCloudDataset(path_to_data=args.test_path)
     testloader = torch.utils.data.DataLoader(testset, batch_size=24, shuffle=True, num_workers=2)
 
@@ -21,6 +26,9 @@ def main():
 
     #  use gpu if available
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    # Create folder
+    os.makedirs(os.path.join(predicted_folder, folder_name), exist_ok=True)
 
     # for predictions
     for single_test_feature, single_test_path in testloader:
@@ -33,13 +41,14 @@ def main():
 
         pcd_output = o3d.geometry.PointCloud()
         pcd_output.points = o3d.utility.Vector3dVector(reshape_output_tensor.detach().cpu().numpy())
-        o3d.io.write_point_cloud("predicted/{}/predict_ae.ply".format(args.folder_name), pcd_output)
+        o3d.io.write_point_cloud(os.path.join(predicted_folder, folder_name, "predict_ae.ply"), pcd_output)
+
 
         reshape_input_tensor = input_tensor[0].reshape(2048, 3)  # (2048, 3)
 
         pcd_input = o3d.geometry.PointCloud()
         pcd_input.points = o3d.utility.Vector3dVector(reshape_input_tensor.detach().cpu().numpy())
-        o3d.io.write_point_cloud("predicted/{}_original_ae.ply".format(args.folder_name), pcd_input)
+        o3d.io.write_point_cloud(os.path.join(predicted_folder, folder_name, "original_ae.ply"), pcd_input)
         break
 
 
