@@ -121,8 +121,8 @@ def main():
     
     # Parse Arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--category', nargs='+', default=[])
-    parser.add_argument('-n', '--folder_name')
+    parser.add_argument('-c', '--category', nargs='+', default=[], required=True, help='pass in a list ')
+    parser.add_argument('-n', '--folder_name', required=True, help='required!')
     args = parser.parse_args()
     
     # Map category to synth_id
@@ -131,7 +131,7 @@ def main():
     # Get paths to data (ex: shape_net_core_uniform_samples_2048/02958343)
     paths_to_input_category =[]
     
-    for(object_type in args.category):
+    for object_type in args.category:
         synth_id = category_to_synth_id[object_type]
         paths_to_input_category.append(os.join.path(data_path, synth_id))
 
