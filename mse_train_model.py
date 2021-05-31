@@ -55,7 +55,7 @@ def main():
 
     # Trying Chamfer Distance
 #     # mean-squared error loss
-     criterion = nn.MSELoss()
+    criterion = nn.MSELoss()
 #    criterion = chamfer.chamfer_3DDist()
     
 
@@ -79,10 +79,10 @@ def main():
             outputs = model(batch_features)
 
 #             # compute training reconstruction loss
-             curr_train_loss = criterion(outputs, batch_features)
+            curr_train_loss = criterion(outputs, batch_features)
             
 #             # compute accumulated gradients
-             curr_train_loss.backward()
+            curr_train_loss.backward()
 
 #            dist1, dist2, _, _ = criterion(torch.reshape(outputs, (-1, num_points, 3)),
 #                                          torch.reshape(batch_features, (-1, num_points, 3)))
@@ -108,10 +108,10 @@ def main():
                 batch_features = batch_features.to(device).float()
 
 #                 # compute reconstructions
-                 outputs = model(batch_features)
+                outputs = model(batch_features)
 
 #                 # compute training reconstruction loss
-                 curr_val_loss = criterion(outputs, batch_features)
+                curr_val_loss = criterion(outputs, batch_features)
 
 
 #                dist1, dist2, _, _ = criterion(torch.reshape(outputs, (-1, num_points, 3)),
