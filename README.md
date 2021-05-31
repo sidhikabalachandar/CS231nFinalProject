@@ -52,22 +52,58 @@ AE_models folder -- folder with different AE models
 
 
 # Quick Start
+
+**Get data:**
+
 `./download_data.sh`
 
+**Create test, val, train splits:**
+```
+python create_splits.py -c guitar bus \
+			-n guitar_bus
+```
+- Creates folder 
+	- splits/guitar_bus
+- Creates files 
+	- splits/guitar_bus/train.txt
+	- splits/guitar_bus/val.txt
+	- splits/guitar_bus/test.txt
 
-python create_splits.py -c guitar basket -n guitar_bus
-Modifies folders and places
+**Train model:**
+```
+python train_model.py -t splits/guitar_bus/train.txt \
+		      -v splits/guitar_bus/val.txt \
+		      -n train_guitar_bus
+```
+- Creates folder 
+	- saved_models/train_guitar_bus
+- Creates files 
+	- saved_models/train_guitar_bus/losses.txt
+	- saved_models/train_guitar_bus/\*.pt
+	- saved_models/train_guitar_bus/best_\*.pt 
+
+**Test model:**
+```
+python test_model.py -t splits/guitar_bus/test.txt \
+		     -m saved_models/train_guitar_bus/best_5.pt \
+		     -n test_guitar_bus
+```
+- Creates folder 
+	- saved_models/predicted
+- Creates files 
+	- saved_models/predicted/\*.ply
 
 
-python train_model.py -t splits/guitar_bus/train.txt -v splits/guitar_bus/val.txt -n train_guitar_bus
-Modifies  folders and places
-
-
-python test_model.py -t splits/guitar_bus/test.txt -m saved_models/train_guitar_bus/best_5.pt -n test_guitar_bus
-Modifies folders and places
-
-
-
-python interpolate_layer.py -pc1 shape_net_core_uniform_samples_2048/03467517/3d65570b55933c86ec7e7dbd8120b3cb.ply -pc2 shape_net_core_uniform_samples_2048
-/03467517/10b65379796e96091c86d29189611a06.ply -m saved_models/train_guitar_bus/best_5.pt -n interpolate_guitar_bus
-Modifies folders and places:
+**Test model:**
+```
+python interpolate_layer.py -pc1 shape_net_core_uniform_samples_2048/03467517/3d65570b55933c86ec7e7dbd8120b3cb.ply \
+			    -pc2 shape_net_core_uniform_samples_2048/03467517/10b65379796e96091c86d29189611a06.ply \
+			    -m saved_models/train_guitar_bus/best_5.pt \
+			    -n interpolate_guitar_bus
+```
+- Creates folders 
+	- interpolation/output_prefix/train_train
+	- interpolation/output_prefix/train_test
+	- interpolation/output_prefix/test_test
+- Creates files
+	- interpolation/output_prefix/\*/time_\*.ply
