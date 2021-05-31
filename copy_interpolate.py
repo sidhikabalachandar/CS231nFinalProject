@@ -125,6 +125,9 @@ def extract_latent_representation():
     file_torch = torch.reshape(file_torch, (1,file_torch.size()[0]))
     output_tensor = model(file_torch)  # (128, 6144,)
     reshape_output_tensor = output_tensor.reshape(2048, 3)  # (2048, 3)
+    pcd_output.points = o3d.utility.Vector3dVector(reshape_output_tensor.detach().cpu().numpy())
+    #o3d.io.write_point_cloud("{}/time_{}.ply".format(folder_name, index), pcd_output)
+    o3d.io.write_point_cloud("should_be_car.ply".format(index)), pcd_output)
     print('LOOP OVER LAYERS')
     print(reshape_output_tensor)
     
