@@ -13,8 +13,8 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def linear_interpolate(x, y, N):
     t_space = np.linspace(x.detach().cpu().numpy(), y.detach().cpu().numpy(), N)
-    for i in range(N):
-        print(t_space[i])
+#     for i in range(N):
+#         print(t_space[i])
     t_space = torch.from_numpy(t_space).to(device).float()
     return t_space
 
@@ -97,6 +97,9 @@ def extract_latent_representation():
         pcd_output.points = o3d.utility.Vector3dVector(torch_intemediate_pc.detach().cpu().numpy())
         #o3d.io.write_point_cloud("{}/time_{}.ply".format(folder_name, index), pcd_output)
         o3d.io.write_point_cloud(os.path.join(interpolation_folder, folder_name, "time_{}.ply".format(index)), pcd_output)
+        if index == 0:
+            print('INTERPOLATED')
+            print(torch_intemediate_pc)
         
         
     file = 'shape_net_core_uniform_samples_2048/02958343/2c6f09768e487fc792bf77570fd2f158.ply'
@@ -107,7 +110,36 @@ def extract_latent_representation():
     file_torch = torch.reshape(file_torch, (1,file_torch.size()[0]))
     for layer in list(model.children())[:14]:
         file_torch = layer(file_torch)
-    print(file_torch)
+    torch_intemediate_pc = file_torch
+    for layer in list(model.children())[14:]:
+        torch_intemediate_pc  = layer(torch_intemediate_pc)
+    print('LOOP OVER LAYERS')
+    print(torch_intemediate_pc)
+    
+    file = 'shape_net_core_uniform_samples_2048/02958343/2c6f09768e487fc792bf77570fd2f158.ply'
+    file_pc = o3d.io.read_point_cloud(file)
+    file_np = np.asarray(file_pc.points).reshape(-1)
+    file_torch = torch.from_numpy(file_np)
+    file_torch = file_torch.to(device).float()
+    file_torch = torch.reshape(file_torch, (1,file_torch.size()[0]))
+    input_tensor = single_test_feature.to(device).float()  # (128, 6144)
+    print("input_path:{}".format(single_test_path[0]))
+
+    output_tensor = model(input_tensor)  # (128, 6144,)
+    reshape_output_tensor = output_tensor[0].reshape(2048, 3)  # (2048, 3)
+
+    pcd_output = o3d.geometry.PointCloud()
+    pcd_output.points = o3d.utility.Vector3dVector(reshape_output_tensor.detach().cpu().numpy())
+    o3d.io.write_point_cloud(os.path.join(predicted_folder, folder_name, "predict_ae.ply"), pcd_output)
+
+
+    reshape_input_tensor = input_tensor[0].reshape(2048, 3)  # (2048, 3)
+
+    pcd_input = o3d.geometry.PointCloud()
+    pcd_input.points = o3d.utility.Vector3dVector(reshape_input_tensor.detach().cpu().numpy())
+    o3d.io.write_point_cloud(os.path.join(predicted_folder, folder_name, "original_ae.ply"), pcd_input)
+    print('LOOP OVER LAYERS')
+    print(torch_intemediate_pc)
 
 if __name__ == "__main__":
     extract_latent_representation()
