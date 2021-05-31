@@ -29,8 +29,7 @@ def main():
     
     file_handle = open(path_loss, "a")
     batch_size = 256
-    #epochs = 500
-    epochs = 5
+    epochs = 500
     learning_rate = 1e-3
     num_points = 2048
 
