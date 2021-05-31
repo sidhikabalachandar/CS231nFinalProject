@@ -1,5 +1,6 @@
 import os
 import torch
+import numpy as np
 import torch.nn as nn
 import torch.optim as optim
 from PointCloudDataset import PointCloudDataset
@@ -58,8 +59,8 @@ def main():
     criterion = chamfer.chamfer_3DDist()
     
 
-    cur_best_val_loss = 10 #really big number
-    cur_best_train_loss = 10 #really big number
+    cur_best_val_loss = np.inf #really big number
+    cur_best_train_loss = np.inf #really big number
     cur_best_epoch = 0
     cur_best_model = None
     for epoch in range(epochs):
