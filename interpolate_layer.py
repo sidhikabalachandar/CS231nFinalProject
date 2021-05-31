@@ -13,8 +13,8 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def linear_interpolate(x, y, N):
     t_space = np.linspace(x.detach().cpu().numpy(), y.detach().cpu().numpy(), N)
-    print(t_space[0])
-    print(t_space[1])
+    for i in range(N):
+        print(t_space[i])
     t_space = torch.from_numpy(t_space).to(device).float()
     return t_space
 
