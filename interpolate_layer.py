@@ -97,6 +97,17 @@ def extract_latent_representation():
         pcd_output.points = o3d.utility.Vector3dVector(torch_intemediate_pc.detach().cpu().numpy())
         #o3d.io.write_point_cloud("{}/time_{}.ply".format(folder_name, index), pcd_output)
         o3d.io.write_point_cloud(os.path.join(interpolation_folder, folder_name, "time_{}.ply".format(index)), pcd_output)
+        
+        
+    file = 'shape_net_core_uniform_samples_2048/02958343/2c6f09768e487fc792bf77570fd2f158.ply'
+    file_pc = o3d.io.read_point_cloud(file)
+    file_np = np.asarray(file_pc.points).reshape(-1)
+    file_torch = torch.from_numpy(file_np)
+    file_torch = file_torch.to(device).float()
+    file_torch = torch.reshape(file_torch, (1,file_torch.size()[0]))
+    for layer in list(model.children())[:14]:
+        file_torch = layer(file_torch)
+    print(file_torch)
 
 if __name__ == "__main__":
     extract_latent_representation()
