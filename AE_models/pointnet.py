@@ -29,7 +29,7 @@ class pointnet(nn.Module):
         self.take_max = nn.MaxPool1d(2048)  # Converting (N, 512, P) --> (N, 512, 1)  selects maximum channel for each point
         
         #Need to add a reshape layer
-        self.flatten_me = nn.Flatten(0, -1) # Converted (N, 512, 1) into (N, 512)
+        self.flatten_me = nn.Flatten() # Converted (N, 512, 1) into (N, 512)
         
         self.fc1 = nn.Linear(512, 256)
         self.fc_bn1 = nn.BatchNorm1d(256)
