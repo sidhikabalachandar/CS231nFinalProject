@@ -104,7 +104,8 @@ def main():
                 optimizer.zero_grad()
 
                 # compute reconstructions
-                x = batch_features.transpose(1, 2)
+                x = torch.reshape(batch_features, (-1, 2048, 3))
+                x = x.transpose(1, 2)
                 val_outputs = model(x)
 
                 # compute reconstructions
