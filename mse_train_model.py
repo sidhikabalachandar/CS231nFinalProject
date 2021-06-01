@@ -130,7 +130,7 @@ def main():
         print(epoch_str)
         file_handle.write(epoch_str + "\n")
 
-        if(epoch % 100 == 0):
+        if((epoch + 1) % 100 == 0):
             torch.save(model, "{}/{}.pt".format(os.path.join(saved_models, folder_name), epoch))
 
         if(val_loss < cur_best_val_loss):
