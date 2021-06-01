@@ -77,7 +77,7 @@ def extract_latent_representation():
     
 
     #Linearly interpolate between 10 points
-    Points = 10
+    Points = 20
     t_space = linear_interpolate(torch_pc_1, torch_pc_2, Points)
     
     #Convert latent representation to full point cloud and save 
