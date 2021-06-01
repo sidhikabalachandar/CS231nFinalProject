@@ -62,7 +62,7 @@ def main():
 
         train_loss = 0
         for index, (batch_features, _) in enumerate(trainloader):
-            # reshape mini-batch data to [N, 784] matrix
+            # reshape mini-batch data to [N, 2048*3] matrix
             # load it to the active device
             batch_features = batch_features.to(device).float()
 
@@ -71,7 +71,8 @@ def main():
             optimizer.zero_grad()
 
             # compute reconstructions
-            x = batch_features.transpose(1, 2)
+            x = torch.reshape(batch_features, (-1, 2048, 3))
+            x = x.transpose(1, 2)
             outputs = model(x)
 
             # compute training reconstruction loss
