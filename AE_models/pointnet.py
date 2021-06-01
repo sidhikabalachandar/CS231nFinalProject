@@ -68,6 +68,10 @@ class pointnet(nn.Module):
         
         x = self.take_max(x)
         x = self.flatten_me(x)
+
+        x = self.lr5(self.fc_bn1(self.fc1(x)))
+        x = self.lr6(self.fc_bn2(self.fc2(x)))
+        x = self.fc3(x)
         
         # Decoder
         x = self.lr7(self.dec_bn7(self.dec_lin7(x)))
