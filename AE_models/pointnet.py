@@ -69,14 +69,22 @@ class pointnet(nn.Module):
         x = self.take_max(x)
         x = self.flatten_me(x)
 
+        assert x != None
         x = self.lr5(self.fc_bn1(self.fc1(x)))
+        assert x != None
         x = self.lr6(self.fc_bn2(self.fc2(x)))
+        assert x != None
         x = self.fc3(x)
         
+        assert x != None
         # Decoder
         x = self.lr7(self.dec_bn7(self.dec_lin7(x)))
+        assert x != None
         x = self.lr8(self.dec_bn8(self.dec_lin8(x)))
+        assert x != None
         x = self.lr9(self.dec_bn9(self.dec_lin9(x)))
+        assert x != None
         
         x = self.dec_lin10(x)
+        assert x != None
         
