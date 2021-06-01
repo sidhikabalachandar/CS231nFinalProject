@@ -107,13 +107,13 @@ def main():
                 batch_features = batch_features.to(device).float()
 
 #                 # compute reconstructions
-#                 outputs = model(batch_features)
+                val_outputs = model(batch_features)
 
 #                 # compute training reconstruction loss
 #                 curr_val_loss = criterion(outputs, batch_features)
 
 
-                dist1, dist2, _, _ = criterion(torch.reshape(outputs, (-1, num_points, 3)),
+                dist1, dist2, _, _ = criterion(torch.reshape(val_outputs, (-1, num_points, 3)),
                                               torch.reshape(batch_features, (-1, num_points, 3)))
 
                 curr_val_loss = torch.mean(torch.sum(dist1 + dist2, axis = 1))
