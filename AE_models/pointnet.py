@@ -1,15 +1,9 @@
 # Based off of: https://github.com/stevenygd/PointFlow/blob/master/models/networks.py
 import torch
-import numpy as np
-import torch.nn.functional as F
-from torch import optim
-from torch import nn
-from models.flow import get_point_cnf
-from models.flow import get_latent_cnf
-from utils import truncated_normal, reduce_tensor, 
+import torch.nn as nn
 
 
-class PointNet(nn.Module):
+class pointnet(nn.Module):
     def __init__(self, input_dim=3):
         super().__init__()
         
@@ -53,7 +47,7 @@ class PointNet(nn.Module):
         self.dec_bn7 = nn.BatchNorm1d(1024)
         self.lr7 = nn.LeakyReLU()
         
-        self.dec_lin8 = nn.Linearin_features=1024, out_features=2048)
+        self.dec_lin8 = nn.Linear(in_features=1024, out_features=2048)
         self.dec_bn8 = nn.BatchNorm1d(num_features=2048)
         self.lr8 = nn.LeakyReLU()
         
