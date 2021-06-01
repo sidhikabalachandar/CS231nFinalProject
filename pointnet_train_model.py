@@ -74,7 +74,11 @@ def main():
             x = torch.reshape(batch_features, (-1, 2048, 3))
             x = x.transpose(1, 2)
             outputs = model(x)
-
+            
+            print("here")
+            print(outputs.size())
+            print(torch.reshape(outputs, (-1, num_points, 3)).size())
+            print(torch.reshape(batch_features, (-1, num_points, 3)).size())
             # compute training reconstruction loss
             dist1, dist2, _, _ = criterion(torch.reshape(outputs, (-1, num_points, 3)),
                                            torch.reshape(batch_features, (-1, num_points, 3)))
