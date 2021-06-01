@@ -72,16 +72,12 @@ class pointnet(nn.Module):
         x = self.lr5(self.fc_bn1(self.fc1(x)))
         x = self.lr6(self.fc_bn2(self.fc2(x)))
         x = self.fc3(x)
-        
-        print(x.size())
-        
+                
         # Decoder
         x = self.lr7(self.dec_bn7(self.dec_lin7(x)))
-        print(x.size())
         x = self.lr8(self.dec_bn8(self.dec_lin8(x)))
-        print(x.size())
         x = self.lr9(self.dec_bn9(self.dec_lin9(x)))
-        print(x.size())
         x = self.dec_lin10(x)
-        print(x.size())
+
+        return x
         
