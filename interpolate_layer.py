@@ -67,11 +67,13 @@ def extract_latent_representation():
     torch_pc_2 = torch_pc_2.to(device).float()
     
     #Reshape tensor (required because we expect batches)
-    torch_pc_1 = torch.reshape(torch_pc_1, (1,torch_pc_1.size()[0]))
-    torch_pc_2 = torch.reshape(torch_pc_2, (1,torch_pc_2.size()[0]))
+    torch_pc_1 = torch.reshape(torch_pc_1, (-1, 2048, 3))
+    torch_pc_2 = torch.reshape(torch_pc_2, (-1, 2048, 3))
+    torch_pc_1 = torch_pc_1.transpose(1,2)
+    torch_pc_2 = torch_pc_2.transpose(1,2)
     
-    #Extract Latent 128 vector ONLY up to 15 layers
-    for layer in list(model.children())[:15]:
+    #Extract Latent 128 vector ONLY up to 18 layers
+    for layer in list(model.children())[:18]:
         torch_pc_1 = layer(torch_pc_1)
         torch_pc_2 = layer(torch_pc_2)
     
@@ -85,7 +87,7 @@ def extract_latent_representation():
         
         torch_intemediate_pc = t
         #Run decoder model 
-        for layer in list(model.children())[15:]:
+        for layer in list(model.children())[18:]:
             torch_intemediate_pc  = layer(torch_intemediate_pc)
         
         #Save point cloud as ply files in folder_name
