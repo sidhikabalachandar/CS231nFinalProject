@@ -2,7 +2,7 @@
 # Overview
 Recently, 3D point clouds have become the preferred method for several geometric modeling and computer vision problems. They provide an accurate yet sparse sampling of the physical world and provide easy integration to traditional image processing pipelines. They have also been rigorously explored in the deep learning community. Yet, a fundamental question that remains is to understand the latent space the model is learning for a given point cloud. In this paper we investigate this question by evaluating the latent space of an autoencoder that was trained to reconstruct geometric categories with varying degrees of structural and topological similarity. As found by others in the field, we see that permutation invariance is a critical part of modeling point cloud data.
 
-[PDF Link](https://github.com/sagoyal2/cs248SCOPE/blob/main/CS231N_FinalReport.pdf)
+[PDF Link](https://github.com/sidhikabalachandar/CS231nFinalProject/blob/main/CS231N_FinalReport.pdf)
 
 # Layout
 
