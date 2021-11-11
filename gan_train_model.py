@@ -7,7 +7,7 @@ import argparse
 from AE_models.gan import *
 
 # Get Chamfer Distance
-import ChamferDistancePytorch.chamfer3D.dist_chamfer_3D as chamfer
+# import ChamferDistancePytorch.chamfer3D.dist_chamfer_3D as chamfer
 
 # Global
 saved_models = "saved_models"
