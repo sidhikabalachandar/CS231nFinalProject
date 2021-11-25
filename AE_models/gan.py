@@ -346,8 +346,6 @@ def run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, load
 
             if (iter_count % show_every == 0):
                 print('Iter: {}, D: {:.4}, G:{:.4}'.format(iter_count, d_error.item(), g_error.item()))
-                imgs_numpy = fake_images.data.cpu().numpy()
-                images.append(imgs_numpy[0:16])
 
             iter_count += 1
 
