@@ -117,9 +117,6 @@ def rgan_discriminator(input_dim=3, seed=None):
         nn.Conv1d(input_dim, 128, 1),
         nn.BatchNorm1d(128),
         nn.LeakyReLU(),
-        nn.Conv1d(128, 128, 1),
-        nn.BatchNorm1d(128),
-        nn.LeakyReLU(),
         nn.Conv1d(128, 256, 1),
         nn.BatchNorm1d(256),
         nn.LeakyReLU(),
@@ -132,8 +129,6 @@ def rgan_discriminator(input_dim=3, seed=None):
         nn.LeakyReLU(),
         nn.Linear(256, 128),
         nn.BatchNorm1d(128),
-        nn.LeakyReLU(),
-        nn.Linear(128, 128),
         nn.LeakyReLU(),
         nn.Linear(128, 1),
         nn.Sigmoid()
@@ -376,6 +371,6 @@ def run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, load
             torch.save(D, "{}/discriminator_{}.pt".format(os.path.join(saved_models, folder_name), epoch))
 
     file_handle.close()
-    
+
     return images
 
