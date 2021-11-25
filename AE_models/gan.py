@@ -1,5 +1,7 @@
+import os
 import torch
 import torch.nn as nn
+import open3d as o3d
 
 NOISE_DIM = 96
 
@@ -373,12 +375,7 @@ def run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, load
             torch.save(G, "{}/generator_{}.pt".format(os.path.join(saved_models, folder_name), epoch))
             torch.save(D, "{}/discriminator_{}.pt".format(os.path.join(saved_models, folder_name), epoch))
 
-
-    #Save and print best model
-    torch.save(cur_best_model, '{}/best_{}.pt'.format(os.path.join(saved_models, folder_name), cur_best_epoch))
     file_handle.close()
-
-
-
+    
     return images
 
