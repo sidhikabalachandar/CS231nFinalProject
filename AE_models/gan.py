@@ -214,6 +214,19 @@ def encode(model, x):
 
     return latent_code
 
+def decode(model, latent_code):
+    
+    # model - this the auto encoder (we only use the decoding half)
+    # latent_code (batch_size, 128)
+
+    x = latent_code
+
+    #Extract Full Point Cloud starting from Latent 128 vector
+    for layer in list(model.children())[18:]:
+        x = layer(x)
+
+    return x
+
 def run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, loader_train, do_lgan, ae_name,
                 show_every=250, batch_size=128, noise_size=96, num_epochs=10, saved_models="saved_models", 
                 folder_name="folder_name", path_loss="path_loss", generated_samples_folder="Generated_Samples"):
@@ -283,9 +296,11 @@ def run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, load
         epoch_str = "epoch : {}/{}, discriminator_loss = {:.4f}, generator_loss = {:.4f}".format(epoch + 1, num_epochs, d_error.item(), g_error.item())
         file_handle.write(epoch_str + "\n")
 
-        if (epoch + 1) % 1 == 0:
-
-            imgs_numpy = fake_images.data.cpu().numpy()
+        if (epoch + 1) % 50 == 0:
+            output = fake_images.data
+            if(do_lgan):
+                output = decode(ae, output)
+            imgs_numpy = output.cpu().numpy()
             imgs_numpy = imgs_numpy.reshape(-1, 2048, 3)
 
             for sample in range(0,4):
