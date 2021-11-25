@@ -114,23 +114,23 @@ def rgan_discriminator(input_dim=3, seed=None):
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
     model = nn.Sequential(
-        nn.Conv1d(input_dim, 128, 1),
+        nn.Conv1d(input_dim, 64, 1),
+        nn.BatchNorm1d(64),
+        nn.LeakyReLU(0.2),
+        nn.Conv1d(64, 128, 1),
         nn.BatchNorm1d(128),
-        nn.LeakyReLU(),
-        nn.Conv1d(128, 256, 1),
-        nn.BatchNorm1d(256),
-        nn.LeakyReLU(),
-        nn.Conv1d(256, 512, 1),
+        nn.LeakyReLU(0.2),
+        nn.Conv1d(128, 512, 1),
         nn.BatchNorm1d(512),
         nn.MaxPool1d(2048),
         nn.Flatten(),
-        nn.Linear(512, 256),
-        nn.BatchNorm1d(256),
-        nn.LeakyReLU(),
-        nn.Linear(256, 128),
+        nn.Linear(512, 128),
         nn.BatchNorm1d(128),
-        nn.LeakyReLU(),
-        nn.Linear(128, 1),
+        nn.LeakyReLU(0.2),
+        nn.Linear(128, 64),
+        nn.BatchNorm1d(64),
+        nn.LeakyReLU(0.2),
+        nn.Linear(64, 1),
         nn.Sigmoid()
     )
 
@@ -207,16 +207,16 @@ def rgan_generator(noise_dim=128, seed=None):
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
     model = nn.Sequential(
-        nn.Linear(noise_dim, 1024),
-        nn.BatchNorm1d(1024),
+        nn.Linear(noise_dim, 64),
+        nn.BatchNorm1d(64),
         nn.LeakyReLU(),
-        nn.Linear(in_features=1024, out_features=2048),
-        nn.BatchNorm1d(num_features=2048),
+        nn.Linear(in_features=64, out_features=128),
+        nn.BatchNorm1d(num_features=128),
         nn.LeakyReLU(),
-        nn.Linear(in_features=2048, out_features=4096),
-        nn.BatchNorm1d(num_features=4096),
+        nn.Linear(in_features=128, out_features=512),
+        nn.BatchNorm1d(num_features=512),
         nn.LeakyReLU(),
-        nn.Linear(in_features=4096, out_features=6144)
+        nn.Linear(in_features=512, out_features=6144)
     )
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
@@ -356,7 +356,7 @@ def run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, load
         epoch_str = "epoch : {}/{}, discriminator_loss = {:.4f}, generator_loss = {:.4f}".format(epoch + 1, num_epochs, d_error.item(), g_error.item())
         file_handle.write(epoch_str + "\n")
 
-        if((epoch + 1) % 50 == 0):
+        if((epoch + 1) % 1 == 0):
 
             imgs_numpy = fake_images.data.cpu().numpy()
             imgs_numpy = imgs_numpy.reshape(-1, 2048, 3)

@@ -25,8 +25,8 @@ def main():
     os.makedirs(os.path.join(saved_models, folder_name), exist_ok=True)
     path_loss = os.path.join(saved_models, folder_name, 'losses.txt')
 
-    batch_size = 256
-    epochs = 500
+    batch_size = 128
+    epochs = 5
     learning_rate = 1e-3
 
     # Load Train, Val, Test Data
@@ -51,7 +51,7 @@ def main():
     D_solver = optim.Adam(D.parameters(), lr=learning_rate)
     G_solver = optim.Adam(G.parameters(), lr=learning_rate)
 
-    run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, trainloader, show_every=250,
+    run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, trainloader, show_every=10,
               batch_size=batch_size, noise_size=128, num_epochs=epochs, saved_models=saved_models, folder_name=folder_name, 
               path_loss=path_loss)
 
