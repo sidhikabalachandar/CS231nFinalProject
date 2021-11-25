@@ -8,6 +8,7 @@ __pycache__/
 
 # Data
 shape_net_core_uniform_samples_2048/
+Generated_Samples/
 
 # Pytorch models
 *.pt
