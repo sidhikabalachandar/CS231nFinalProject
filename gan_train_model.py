@@ -17,7 +17,6 @@ def main():
     # Parse Arguments
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--train_path', required=True, help='Path to training .txt file.')
-    parser.add_argument('-v', '--val_path', required=True, help='Path to validation .txt file.')
     parser.add_argument('-n', '--folder_name', required=True,
                         help='Name of folder to save loss(.txt) and model(.pt) in.')
     args = parser.parse_args()
