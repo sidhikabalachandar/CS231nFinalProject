@@ -23,12 +23,75 @@ def sample_noise(batch_size, dim, seed=None):
 
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    return torch.rand((batch_size, dim)).type(dtype) * 2 - 1
+    #return torch.rand((batch_size, dim)).type(dtype) * 2 - 1
+    return torch.normal(0, 0.2, (batch_size, dim))
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
 
-def discriminator(input_dim=3, seed=None):
+# def discriminator(input_dim=3, seed=None):
+#     """
+#     Build and return a PyTorch model implementing the architecture above.
+#     """
+
+#     if seed is not None:
+#         torch.manual_seed(seed)
+
+#     model = None
+
+#     # input  : (N, 3, 2048)
+#     # output : (N, 2048*3)  
+
+#     ##############################################################################
+#     # TODO: Implement architecture                                               #
+#     #                                                                            #
+#     # HINT: nn.Sequential might be helpful.                                      #
+#     ##############################################################################
+#     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+
+#     # model = nn.Sequential(
+#     #     nn.Conv1d(input_dim, 128, 1),
+#     #     nn.BatchNorm1d(128),
+#     #     nn.LeakyReLU(),
+#     #     nn.Conv1d(128, 128, 1),
+#     #     nn.BatchNorm1d(128),
+#     #     nn.LeakyReLU(),
+#     #     nn.Conv1d(128, 256, 1),
+#     #     nn.BatchNorm1d(256),
+#     #     nn.LeakyReLU(),
+#     #     nn.Conv1d(256, 512, 1),
+#     #     nn.BatchNorm1d(512),
+#     #     nn.MaxPool1d(2048),
+#     #     nn.Flatten(),
+#     #     nn.Linear(512, 256),
+#     #     nn.BatchNorm1d(256),
+#     #     nn.LeakyReLU(),
+#     #     nn.Linear(256, 128),
+#     #     nn.BatchNorm1d(128),
+#     #     nn.LeakyReLU(),
+#     #     nn.Linear(128, 128),
+#     #     nn.LeakyReLU(),
+#     #     nn.Linear(128, 1),
+#     #     nn.Sigmoid()
+#     # )
+
+#     model = nn.Sequential(
+#         nn.Conv1d(input_dim, 512, 1),
+#         nn.BatchNorm1d(512),
+#         nn.MaxPool1d(2048),
+#         nn.Flatten(),
+#         nn.Linear(512, 1),
+#         nn.Sigmoid()
+#     )
+
+#     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+#     ##############################################################################
+#     #                               END OF YOUR CODE                             #
+#     ##############################################################################
+#     return model
+
+
+def rgan_discriminator(input_dim=3, seed=None):
     """
     Build and return a PyTorch model implementing the architecture above.
     """
@@ -39,7 +102,7 @@ def discriminator(input_dim=3, seed=None):
     model = None
 
     # input  : (N, 3, 2048)
-    # output : (N, 2048*3)  
+    # output : (N, 1)  
 
     ##############################################################################
     # TODO: Implement architecture                                               #
@@ -48,38 +111,29 @@ def discriminator(input_dim=3, seed=None):
     ##############################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    # model = nn.Sequential(
-    #     nn.Conv1d(input_dim, 128, 1),
-    #     nn.BatchNorm1d(128),
-    #     nn.LeakyReLU(),
-    #     nn.Conv1d(128, 128, 1),
-    #     nn.BatchNorm1d(128),
-    #     nn.LeakyReLU(),
-    #     nn.Conv1d(128, 256, 1),
-    #     nn.BatchNorm1d(256),
-    #     nn.LeakyReLU(),
-    #     nn.Conv1d(256, 512, 1),
-    #     nn.BatchNorm1d(512),
-    #     nn.MaxPool1d(2048),
-    #     nn.Flatten(),
-    #     nn.Linear(512, 256),
-    #     nn.BatchNorm1d(256),
-    #     nn.LeakyReLU(),
-    #     nn.Linear(256, 128),
-    #     nn.BatchNorm1d(128),
-    #     nn.LeakyReLU(),
-    #     nn.Linear(128, 128),
-    #     nn.LeakyReLU(),
-    #     nn.Linear(128, 1),
-    #     nn.Sigmoid()
-    # )
-
     model = nn.Sequential(
-        nn.Conv1d(input_dim, 512, 1),
+        nn.Conv1d(input_dim, 128, 1),
+        nn.BatchNorm1d(128),
+        nn.LeakyReLU(),
+        nn.Conv1d(128, 128, 1),
+        nn.BatchNorm1d(128),
+        nn.LeakyReLU(),
+        nn.Conv1d(128, 256, 1),
+        nn.BatchNorm1d(256),
+        nn.LeakyReLU(),
+        nn.Conv1d(256, 512, 1),
         nn.BatchNorm1d(512),
         nn.MaxPool1d(2048),
         nn.Flatten(),
-        nn.Linear(512, 1),
+        nn.Linear(512, 256),
+        nn.BatchNorm1d(256),
+        nn.LeakyReLU(),
+        nn.Linear(256, 128),
+        nn.BatchNorm1d(128),
+        nn.LeakyReLU(),
+        nn.Linear(128, 128),
+        nn.LeakyReLU(),
+        nn.Linear(128, 1),
         nn.Sigmoid()
     )
 
@@ -89,8 +143,56 @@ def discriminator(input_dim=3, seed=None):
     ##############################################################################
     return model
 
+# def generator(noise_dim=128, seed=None):
+#     """
+#     Build and return a PyTorch model implementing the architecture above.
+#     """
 
-def generator(noise_dim=128, seed=None):
+#     if seed is not None:
+#         torch.manual_seed(seed)
+
+#     model = None
+
+#     ##############################################################################
+#     # TODO: Implement architecture                                               #
+#     #                                                                            #
+#     # HINT: nn.Sequential might be helpful.                                      #
+#     ##############################################################################
+#     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+
+#     # model = nn.Sequential(
+#     #     nn.Linear(noise_dim, 1024),
+#     #     nn.BatchNorm1d(1024),
+#     #     nn.LeakyReLU(),
+#     #     nn.Linear(in_features=1024, out_features=2048),
+#     #     nn.BatchNorm1d(num_features=2048),
+#     #     nn.LeakyReLU(),
+#     #     nn.Linear(in_features=2048, out_features=4096),
+#     #     nn.BatchNorm1d(num_features=4096),
+#     #     nn.LeakyReLU(),
+#     #     nn.Linear(in_features=4096, out_features=6144)
+#     # )
+
+#     model = nn.Sequential(
+#         nn.Linear(noise_dim, 6144)
+#         # nn.BatchNorm1d(1024),
+#         # nn.LeakyReLU(),
+#         # nn.Linear(in_features=1024, out_features=2048),
+#         # nn.BatchNorm1d(num_features=2048),
+#         # nn.LeakyReLU(),
+#         # nn.Linear(in_features=2048, out_features=4096),
+#         # nn.BatchNorm1d(num_features=4096),
+#         # nn.LeakyReLU(),
+#         # nn.Linear(in_features=4096, out_features=6144)
+#     )
+
+#     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+#     ##############################################################################
+#     #                               END OF YOUR CODE                             #
+#     ##############################################################################
+#     return model
+
+def rgan_generator(noise_dim=128, seed=None):
     """
     Build and return a PyTorch model implementing the architecture above.
     """
@@ -107,30 +209,17 @@ def generator(noise_dim=128, seed=None):
     ##############################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    # model = nn.Sequential(
-    #     nn.Linear(noise_dim, 1024),
-    #     nn.BatchNorm1d(1024),
-    #     nn.LeakyReLU(),
-    #     nn.Linear(in_features=1024, out_features=2048),
-    #     nn.BatchNorm1d(num_features=2048),
-    #     nn.LeakyReLU(),
-    #     nn.Linear(in_features=2048, out_features=4096),
-    #     nn.BatchNorm1d(num_features=4096),
-    #     nn.LeakyReLU(),
-    #     nn.Linear(in_features=4096, out_features=6144)
-    # )
-
     model = nn.Sequential(
-        nn.Linear(noise_dim, 6144)
-        # nn.BatchNorm1d(1024),
-        # nn.LeakyReLU(),
-        # nn.Linear(in_features=1024, out_features=2048),
-        # nn.BatchNorm1d(num_features=2048),
-        # nn.LeakyReLU(),
-        # nn.Linear(in_features=2048, out_features=4096),
-        # nn.BatchNorm1d(num_features=4096),
-        # nn.LeakyReLU(),
-        # nn.Linear(in_features=4096, out_features=6144)
+        nn.Linear(noise_dim, 1024),
+        nn.BatchNorm1d(1024),
+        nn.LeakyReLU(),
+        nn.Linear(in_features=1024, out_features=2048),
+        nn.BatchNorm1d(num_features=2048),
+        nn.LeakyReLU(),
+        nn.Linear(in_features=2048, out_features=4096),
+        nn.BatchNorm1d(num_features=4096),
+        nn.LeakyReLU(),
+        nn.Linear(in_features=4096, out_features=6144)
     )
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
@@ -138,7 +227,6 @@ def generator(noise_dim=128, seed=None):
     #                               END OF YOUR CODE                             #
     ##############################################################################
     return model
-
 
 def bce_loss(input, target):
     """
@@ -207,7 +295,8 @@ def generator_loss(logits_fake):
 
 
 def run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, loader_train, show_every=250,
-              batch_size=128, noise_size=96, num_epochs=10):
+              batch_size=128, noise_size=96, num_epochs=10, saved_models="saved_models", 
+              folder_name="folder_name", path_loss="path_loss", generated_samples_folder="Generated_Samples"):
     """
     Train a GAN!
 
@@ -222,6 +311,12 @@ def run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, load
     - noise_size: Dimension of the noise to use as input to the generator.
     - num_epochs: Number of epochs over the training dataset to use for training.
     """
+
+    file_handle = open(path_loss, "a")
+
+    os.makedirs(os.path.join(saved_models, folder_name), exist_ok=True)
+    os.makedirs(os.path.join(generated_samples_folder, folder_name), exist_ok=True)
+
     images = []
     iter_count = 0
     for epoch in range(num_epochs):
@@ -239,8 +334,8 @@ def run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, load
             fake_images = G(g_fake_seed).detach()
             logits_fake = D(fake_images.view(batch_size, 2048, 3).transpose(1, 2))
 
-            d_total_error = discriminator_loss(logits_real, logits_fake)
-            d_total_error.backward()
+            d_error = discriminator_loss(logits_real, logits_fake)
+            d_error.backward()
             D_solver.step()
 
             G_solver.zero_grad()
@@ -253,11 +348,37 @@ def run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, load
             G_solver.step()
 
             if (iter_count % show_every == 0):
-                print('Iter: {}, D: {:.4}, G:{:.4}'.format(iter_count, d_total_error.item(), g_error.item()))
+                print('Iter: {}, D: {:.4}, G:{:.4}'.format(iter_count, d_error.item(), g_error.item()))
                 imgs_numpy = fake_images.data.cpu().numpy()
                 images.append(imgs_numpy[0:16])
 
             iter_count += 1
+
+
+        # display the epoch training and validatation loss
+        epoch_str = "epoch : {}/{}, discriminator_loss = {:.4f}, generator_loss = {:.4f}".format(epoch + 1, num_epochs, d_error.item(), g_error.item())
+        file_handle.write(epoch_str + "\n")
+
+        if((epoch + 1) % 50 == 0):
+
+            imgs_numpy = fake_images.data.cpu().numpy()
+            imgs_numpy = imgs_numpy.reshape(-1, 2048, 3)
+
+            for sample in range(0,4):
+                curr_pc = imgs_numpy[sample,:,:]
+                pcd_output = o3d.geometry.PointCloud()
+                pcd_output.points = o3d.utility.Vector3dVector(curr_pc)
+                o3d.io.write_point_cloud(os.path.join(generated_samples_folder, folder_name, "epoch_{}_sample_{}.ply".format(epoch+1, sample)), pcd_output)
+
+            torch.save(G, "{}/generator_{}.pt".format(os.path.join(saved_models, folder_name), epoch))
+            torch.save(D, "{}/discriminator_{}.pt".format(os.path.join(saved_models, folder_name), epoch))
+
+
+    #Save and print best model
+    torch.save(cur_best_model, '{}/best_{}.pt'.format(os.path.join(saved_models, folder_name), cur_best_epoch))
+    file_handle.close()
+
+
 
     return images
 

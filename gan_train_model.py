@@ -24,7 +24,7 @@ def main():
 
     folder_name = args.folder_name
     os.makedirs(os.path.join(saved_models, folder_name), exist_ok=True)
-    # path_loss = os.path.join(saved_models, folder_name, 'losses.txt')
+    path_loss = os.path.join(saved_models, folder_name, 'losses.txt')
 
     batch_size = 256
     epochs = 500
@@ -39,8 +39,8 @@ def main():
 
     # create a model from `AE` autoencoder class
     # load it to the specified device, either gpu or cpu
-    D = discriminator()
-    G = generator()
+    D = rgan_discriminator()
+    G = rgan_generator()
 
     #  use gpu if available
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -53,7 +53,7 @@ def main():
     G_solver = optim.Adam(G.parameters(), lr=learning_rate)
 
     run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, trainloader, show_every=250,
-              batch_size=batch_size, noise_size=128, num_epochs=epochs)
+              batch_size=batch_size, noise_size=128, num_epochs=epochs, saved_models, folder_name, path_loss)
 
 
 if __name__ == "__main__":
