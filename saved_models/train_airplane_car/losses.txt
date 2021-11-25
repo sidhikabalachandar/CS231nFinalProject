@@ -1,0 +1,6 @@
+epoch : 1/500, train loss = 220.9512, val loss = 21.2042
+epoch : 2/500, train loss = 27.1802, val loss = 12.5699
+epoch : 3/500, train loss = 13.2563, val loss = 18.7663
+epoch : 4/500, train loss = 24.2810, val loss = 25.1517
+epoch : 5/500, train loss = 20.4108, val loss = 21.1980
+epoch : 6/500, train loss = 24.0109, val loss = 25.1869
