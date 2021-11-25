@@ -11,7 +11,7 @@ class pointnet(nn.Module):
         # output : (N, 2048*3)
         
         # Encode
-        self.conv1 = nn.Conv1d(input_dim, 128, 1)
+        self.conv1 = nn.Conv1d(input_dim, 128, 1) 
         self.bn1 = nn.BatchNorm1d(128)
         self.lr1 = nn.LeakyReLU()
         

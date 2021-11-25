@@ -38,6 +38,9 @@ def discriminator(input_dim=3, seed=None):
 
     model = None
 
+    # input  : (N, 3, 2048)
+    # output : (N, 2048*3)  
+
     ##############################################################################
     # TODO: Implement architecture                                               #
     #                                                                            #
@@ -45,27 +48,38 @@ def discriminator(input_dim=3, seed=None):
     ##############################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
+    # model = nn.Sequential(
+    #     nn.Conv1d(input_dim, 128, 1),
+    #     nn.BatchNorm1d(128),
+    #     nn.LeakyReLU(),
+    #     nn.Conv1d(128, 128, 1),
+    #     nn.BatchNorm1d(128),
+    #     nn.LeakyReLU(),
+    #     nn.Conv1d(128, 256, 1),
+    #     nn.BatchNorm1d(256),
+    #     nn.LeakyReLU(),
+    #     nn.Conv1d(256, 512, 1),
+    #     nn.BatchNorm1d(512),
+    #     nn.MaxPool1d(2048),
+    #     nn.Flatten(),
+    #     nn.Linear(512, 256),
+    #     nn.BatchNorm1d(256),
+    #     nn.LeakyReLU(),
+    #     nn.Linear(256, 128),
+    #     nn.BatchNorm1d(128),
+    #     nn.LeakyReLU(),
+    #     nn.Linear(128, 128),
+    #     nn.LeakyReLU(),
+    #     nn.Linear(128, 1),
+    #     nn.Sigmoid()
+    # )
+
     model = nn.Sequential(
-        nn.Conv1d(input_dim, 128, 1),
-        nn.BatchNorm1d(128),
-        nn.LeakyReLU(),
-        nn.Conv1d(128, 128, 1),
-        nn.BatchNorm1d(128),
-        nn.LeakyReLU(),
-        nn.Conv1d(128, 256, 1),
-        nn.BatchNorm1d(256),
-        nn.LeakyReLU(),
-        nn.Conv1d(256, 512, 1),
+        nn.Conv1d(input_dim, 512, 1),
         nn.BatchNorm1d(512),
         nn.MaxPool1d(2048),
         nn.Flatten(),
-        nn.Linear(512, 256),
-        nn.BatchNorm1d(256),
-        nn.LeakyReLU(),
-        nn.Linear(256, 128),
-        nn.BatchNorm1d(128),
-        nn.LeakyReLU(),
-        nn.Linear(128, 128),
+        nn.Linear(512, 1),
         nn.Sigmoid()
     )
 
@@ -93,17 +107,30 @@ def generator(noise_dim=128, seed=None):
     ##############################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
+    # model = nn.Sequential(
+    #     nn.Linear(noise_dim, 1024),
+    #     nn.BatchNorm1d(1024),
+    #     nn.LeakyReLU(),
+    #     nn.Linear(in_features=1024, out_features=2048),
+    #     nn.BatchNorm1d(num_features=2048),
+    #     nn.LeakyReLU(),
+    #     nn.Linear(in_features=2048, out_features=4096),
+    #     nn.BatchNorm1d(num_features=4096),
+    #     nn.LeakyReLU(),
+    #     nn.Linear(in_features=4096, out_features=6144)
+    # )
+
     model = nn.Sequential(
-        nn.Linear(noise_dim, 1024),
-        nn.BatchNorm1d(1024),
-        nn.LeakyReLU(),
-        nn.Linear(in_features=1024, out_features=2048),
-        nn.BatchNorm1d(num_features=2048),
-        nn.LeakyReLU(),
-        nn.Linear(in_features=2048, out_features=4096),
-        nn.BatchNorm1d(num_features=4096),
-        nn.LeakyReLU(),
-        nn.Linear(in_features=4096, out_features=6144)
+        nn.Linear(noise_dim, 6144)
+        # nn.BatchNorm1d(1024),
+        # nn.LeakyReLU(),
+        # nn.Linear(in_features=1024, out_features=2048),
+        # nn.BatchNorm1d(num_features=2048),
+        # nn.LeakyReLU(),
+        # nn.Linear(in_features=2048, out_features=4096),
+        # nn.BatchNorm1d(num_features=4096),
+        # nn.LeakyReLU(),
+        # nn.Linear(in_features=4096, out_features=6144)
     )
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
@@ -199,15 +226,18 @@ def run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, load
     iter_count = 0
     for epoch in range(num_epochs):
         for x, _ in loader_train:
+        # for index, (batch_features, _) in enumerate(trainloader):
             if len(x) != batch_size:
                 continue
             D_solver.zero_grad()
             real_data = x.type(dtype)
-            logits_real = D(2 * (real_data - 0.5)).type(dtype)
+            real_data = torch.reshape(real_data, (-1, 2048, 3))
+            real_data = real_data.transpose(1, 2)
+            logits_real = D(real_data).type(dtype)
 
             g_fake_seed = sample_noise(batch_size, noise_size).type(dtype)
             fake_images = G(g_fake_seed).detach()
-            logits_fake = D(fake_images.view(batch_size, 1, 28, 28))
+            logits_fake = D(fake_images.view(batch_size, 2048, 3).transpose(1, 2))
 
             d_total_error = discriminator_loss(logits_real, logits_fake)
             d_total_error.backward()
@@ -217,7 +247,7 @@ def run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, load
             g_fake_seed = sample_noise(batch_size, noise_size).type(dtype)
             fake_images = G(g_fake_seed)
 
-            gen_logits_fake = D(fake_images.view(batch_size, 1, 28, 28))
+            gen_logits_fake = D(fake_images.view(batch_size, 2048, 3).transpose(1, 2))
             g_error = generator_loss(gen_logits_fake)
             g_error.backward()
             G_solver.step()

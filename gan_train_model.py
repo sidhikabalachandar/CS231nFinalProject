@@ -26,11 +26,9 @@ def main():
     os.makedirs(os.path.join(saved_models, folder_name), exist_ok=True)
     # path_loss = os.path.join(saved_models, folder_name, 'losses.txt')
 
-    # file_handle = open(path_loss, "a")
     batch_size = 256
     epochs = 500
     learning_rate = 1e-3
-    # num_points = 2048
 
     # Load Train, Val, Test Data
     trainset = PointCloudDataset(path_to_data=args.train_path)

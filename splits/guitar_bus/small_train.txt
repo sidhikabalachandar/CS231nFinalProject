@@ -1,0 +1,2 @@
+shape_net_core_uniform_samples_2048/03467517/7e6d283b6c6728ab343b0b12983b9982.ply
+shape_net_core_uniform_samples_2048/02924116/4ed9d6cc9a4a71d73aa5bf64bbf56692.ply

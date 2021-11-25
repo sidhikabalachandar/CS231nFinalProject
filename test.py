@@ -15,6 +15,7 @@ saved_models = "saved_models"
 
 def main():
     print("hi avi! this worked .u.")
+    print("hi again")
 
 
 if __name__ == "__main__":
