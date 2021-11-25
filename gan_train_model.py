@@ -52,7 +52,8 @@ def main():
     G_solver = optim.Adam(G.parameters(), lr=learning_rate)
 
     run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, trainloader, show_every=250,
-              batch_size=batch_size, noise_size=128, num_epochs=epochs, saved_models, folder_name, path_loss)
+              batch_size=batch_size, noise_size=128, num_epochs=epochs, saved_models=saved_models, folder_name=folder_name, 
+              path_loss=path_loss)
 
 
 if __name__ == "__main__":
