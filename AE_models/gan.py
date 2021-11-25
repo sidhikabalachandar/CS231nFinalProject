@@ -140,6 +140,8 @@ def rgan_discriminator(input_dim=3, seed=None):
     ##############################################################################
     return model
 
+def lgan_discriminator():
+
 # def generator(noise_dim=128, seed=None):
 #     """
 #     Build and return a PyTorch model implementing the architecture above.
@@ -291,9 +293,29 @@ def generator_loss(logits_fake):
     return loss
 
 
-def run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, loader_train, show_every=250,
-              batch_size=128, noise_size=96, num_epochs=10, saved_models="saved_models", 
-              folder_name="folder_name", path_loss="path_loss", generated_samples_folder="Generated_Samples"):
+def load_ae(ae_name):
+    model = torch.load(ae_name)
+    model.eval()
+
+    return model
+
+
+def encode(model, x):
+    
+    # model - this the auto encoder (we only use the encoding half)
+    # x (batch_size, 2048, 3)
+
+    latent_code = x
+
+    #Extract Latent 128 vector ONLY up to 18 layers
+    for layer in list(model.children())[:18]:
+        latent_code = layer(latent_code)
+
+    return latent_code
+
+def run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, loader_train, do_lgan, ae_name,
+                show_every=250, batch_size=128, noise_size=96, num_epochs=10, saved_models="saved_models", 
+                folder_name="folder_name", path_loss="path_loss", generated_samples_folder="Generated_Samples"):
     """
     Train a GAN!
 
@@ -316,6 +338,11 @@ def run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, load
 
     images = []
     iter_count = 0
+
+
+    if(do_lgan):
+        ae = load_ae(ae_name)
+
     for epoch in range(num_epochs):
         for x, _ in loader_train:
         # for index, (batch_features, _) in enumerate(trainloader):
@@ -325,6 +352,8 @@ def run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, load
             real_data = x.type(dtype)
             real_data = torch.reshape(real_data, (-1, 2048, 3))
             real_data = real_data.transpose(1, 2)
+            if(do_lgan):
+                real_data = encode(ae, real_data)
             logits_real = D(real_data).type(dtype)
 
             g_fake_seed = sample_noise(batch_size, noise_size).type(dtype)
