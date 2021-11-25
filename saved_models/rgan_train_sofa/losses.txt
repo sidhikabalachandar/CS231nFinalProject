@@ -1,0 +1,5 @@
+epoch : 1/5, discriminator_loss = 1.3909, generator_loss = 0.5125
+epoch : 2/5, discriminator_loss = 1.3475, generator_loss = 0.5401
+epoch : 3/5, discriminator_loss = 1.2922, generator_loss = 0.5623
+epoch : 4/5, discriminator_loss = 1.3199, generator_loss = 0.5703
+epoch : 5/5, discriminator_loss = 1.2384, generator_loss = 0.5790
