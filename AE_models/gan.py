@@ -31,68 +31,6 @@ def sample_noise(batch_size, dim, seed=None):
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
 
-# def discriminator(input_dim=3, seed=None):
-#     """
-#     Build and return a PyTorch model implementing the architecture above.
-#     """
-
-#     if seed is not None:
-#         torch.manual_seed(seed)
-
-#     model = None
-
-#     # input  : (N, 3, 2048)
-#     # output : (N, 2048*3)  
-
-#     ##############################################################################
-#     # TODO: Implement architecture                                               #
-#     #                                                                            #
-#     # HINT: nn.Sequential might be helpful.                                      #
-#     ##############################################################################
-#     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
-#     # model = nn.Sequential(
-#     #     nn.Conv1d(input_dim, 128, 1),
-#     #     nn.BatchNorm1d(128),
-#     #     nn.LeakyReLU(),
-#     #     nn.Conv1d(128, 128, 1),
-#     #     nn.BatchNorm1d(128),
-#     #     nn.LeakyReLU(),
-#     #     nn.Conv1d(128, 256, 1),
-#     #     nn.BatchNorm1d(256),
-#     #     nn.LeakyReLU(),
-#     #     nn.Conv1d(256, 512, 1),
-#     #     nn.BatchNorm1d(512),
-#     #     nn.MaxPool1d(2048),
-#     #     nn.Flatten(),
-#     #     nn.Linear(512, 256),
-#     #     nn.BatchNorm1d(256),
-#     #     nn.LeakyReLU(),
-#     #     nn.Linear(256, 128),
-#     #     nn.BatchNorm1d(128),
-#     #     nn.LeakyReLU(),
-#     #     nn.Linear(128, 128),
-#     #     nn.LeakyReLU(),
-#     #     nn.Linear(128, 1),
-#     #     nn.Sigmoid()
-#     # )
-
-#     model = nn.Sequential(
-#         nn.Conv1d(input_dim, 512, 1),
-#         nn.BatchNorm1d(512),
-#         nn.MaxPool1d(2048),
-#         nn.Flatten(),
-#         nn.Linear(512, 1),
-#         nn.Sigmoid()
-#     )
-
-#     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-#     ##############################################################################
-#     #                               END OF YOUR CODE                             #
-#     ##############################################################################
-#     return model
-
-
 def rgan_discriminator(input_dim=3, seed=None):
     """
     Build and return a PyTorch model implementing the architecture above.
@@ -101,17 +39,8 @@ def rgan_discriminator(input_dim=3, seed=None):
     if seed is not None:
         torch.manual_seed(seed)
 
-    model = None
-
     # input  : (N, 3, 2048)
-    # output : (N, 1)  
-
-    ##############################################################################
-    # TODO: Implement architecture                                               #
-    #                                                                            #
-    # HINT: nn.Sequential might be helpful.                                      #
-    ##############################################################################
-    # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+    # output : (N, 1)
 
     model = nn.Sequential(
         nn.Conv1d(input_dim, 64, 1),
@@ -133,63 +62,31 @@ def rgan_discriminator(input_dim=3, seed=None):
         nn.Linear(64, 1),
         nn.Sigmoid()
     )
-
-    # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-    ##############################################################################
-    #                               END OF YOUR CODE                             #
-    ##############################################################################
     return model
 
-def lgan_discriminator():
+def lgan_discriminator(input_dim=128, seed=None):
+    """
+    Build and return a PyTorch model implementing the architecture above.
+    """
 
-# def generator(noise_dim=128, seed=None):
-#     """
-#     Build and return a PyTorch model implementing the architecture above.
-#     """
+    if seed is not None:
+        torch.manual_seed(seed)
 
-#     if seed is not None:
-#         torch.manual_seed(seed)
+    # input  : (N, 3, 2048)
+    # output : (N, 1)
 
-#     model = None
+    model = nn.Sequential(
+        nn.Linear(input_dim, 256),
+        nn.BatchNorm1d(256),
+        nn.LeakyReLU(0.2),
+        nn.Linear(in_features=256, out_features=512),
+        nn.BatchNorm1d(num_features=512),
+        nn.LeakyReLU(0.2),
+        nn.Linear(in_features=512, out_features=1),
+        nn.Sigmoid()
+    )
+    return model
 
-#     ##############################################################################
-#     # TODO: Implement architecture                                               #
-#     #                                                                            #
-#     # HINT: nn.Sequential might be helpful.                                      #
-#     ##############################################################################
-#     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
-#     # model = nn.Sequential(
-#     #     nn.Linear(noise_dim, 1024),
-#     #     nn.BatchNorm1d(1024),
-#     #     nn.LeakyReLU(),
-#     #     nn.Linear(in_features=1024, out_features=2048),
-#     #     nn.BatchNorm1d(num_features=2048),
-#     #     nn.LeakyReLU(),
-#     #     nn.Linear(in_features=2048, out_features=4096),
-#     #     nn.BatchNorm1d(num_features=4096),
-#     #     nn.LeakyReLU(),
-#     #     nn.Linear(in_features=4096, out_features=6144)
-#     # )
-
-#     model = nn.Sequential(
-#         nn.Linear(noise_dim, 6144)
-#         # nn.BatchNorm1d(1024),
-#         # nn.LeakyReLU(),
-#         # nn.Linear(in_features=1024, out_features=2048),
-#         # nn.BatchNorm1d(num_features=2048),
-#         # nn.LeakyReLU(),
-#         # nn.Linear(in_features=2048, out_features=4096),
-#         # nn.BatchNorm1d(num_features=4096),
-#         # nn.LeakyReLU(),
-#         # nn.Linear(in_features=4096, out_features=6144)
-#     )
-
-#     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-#     ##############################################################################
-#     #                               END OF YOUR CODE                             #
-#     ##############################################################################
-#     return model
 
 def rgan_generator(noise_dim=128, seed=None):
     """
@@ -199,33 +96,37 @@ def rgan_generator(noise_dim=128, seed=None):
     if seed is not None:
         torch.manual_seed(seed)
 
-    model = None
-
-    ##############################################################################
-    # TODO: Implement architecture                                               #
-    #                                                                            #
-    # HINT: nn.Sequential might be helpful.                                      #
-    ##############################################################################
-    # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
     model = nn.Sequential(
         nn.Linear(noise_dim, 64),
         nn.BatchNorm1d(64),
-        nn.LeakyReLU(),
+        nn.LeakyReLU(0.2),
         nn.Linear(in_features=64, out_features=128),
         nn.BatchNorm1d(num_features=128),
-        nn.LeakyReLU(),
+        nn.LeakyReLU(0.2),
         nn.Linear(in_features=128, out_features=512),
         nn.BatchNorm1d(num_features=512),
-        nn.LeakyReLU(),
+        nn.LeakyReLU(0.2),
         nn.Linear(in_features=512, out_features=6144)
     )
-
-    # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-    ##############################################################################
-    #                               END OF YOUR CODE                             #
-    ##############################################################################
     return model
+
+
+def lgan_generator(noise_dim=128, seed=None):
+    """
+    Build and return a PyTorch model implementing the architecture above.
+    """
+
+    if seed is not None:
+        torch.manual_seed(seed)
+
+    model = nn.Sequential(
+        nn.Linear(noise_dim, 128),
+        nn.BatchNorm1d(128),
+        nn.LeakyReLU(0.2),
+        nn.Linear(in_features=128, out_features=128)
+    )
+    return model
+
 
 def bce_loss(input, target):
     """
@@ -340,19 +241,18 @@ def run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, load
     iter_count = 0
 
 
-    if(do_lgan):
+    if do_lgan:
         ae = load_ae(ae_name)
 
     for epoch in range(num_epochs):
         for x, _ in loader_train:
-        # for index, (batch_features, _) in enumerate(trainloader):
             if len(x) != batch_size:
                 continue
             D_solver.zero_grad()
             real_data = x.type(dtype)
             real_data = torch.reshape(real_data, (-1, 2048, 3))
             real_data = real_data.transpose(1, 2)
-            if(do_lgan):
+            if do_lgan:
                 real_data = encode(ae, real_data)
             logits_real = D(real_data).type(dtype)
 
@@ -373,7 +273,7 @@ def run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, load
             g_error.backward()
             G_solver.step()
 
-            if (iter_count % show_every == 0):
+            if iter_count % show_every == 0:
                 print('Iter: {}, D: {:.4}, G:{:.4}'.format(iter_count, d_error.item(), g_error.item()))
 
             iter_count += 1
@@ -383,7 +283,7 @@ def run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, load
         epoch_str = "epoch : {}/{}, discriminator_loss = {:.4f}, generator_loss = {:.4f}".format(epoch + 1, num_epochs, d_error.item(), g_error.item())
         file_handle.write(epoch_str + "\n")
 
-        if((epoch + 1) % 1 == 0):
+        if (epoch + 1) % 1 == 0:
 
             imgs_numpy = fake_images.data.cpu().numpy()
             imgs_numpy = imgs_numpy.reshape(-1, 2048, 3)
