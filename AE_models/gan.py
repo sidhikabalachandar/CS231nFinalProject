@@ -256,7 +256,8 @@ def run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, load
 
             g_fake_seed = sample_noise(batch_size, noise_size).type(dtype)
             fake_images = G(g_fake_seed).detach()
-            print(fake_images.size())
+            if do_lgan:
+                fake_images = decode(ae, fake_images)
             logits_fake = D(fake_images.view(batch_size, 2048, 3).transpose(1, 2))
 
             d_error = discriminator_loss(logits_real, logits_fake)
@@ -283,10 +284,7 @@ def run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, load
         file_handle.write(epoch_str + "\n")
 
         if (epoch + 1) % 50 == 0:
-            output = fake_images.data
-            if(do_lgan):
-                output = decode(ae, output)
-            imgs_numpy = output.cpu().numpy()
+            imgs_numpy = fake_images.data.cpu().numpy()
             imgs_numpy = imgs_numpy.reshape(-1, 2048, 3)
 
             for sample in range(0,4):
