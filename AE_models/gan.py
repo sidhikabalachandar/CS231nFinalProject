@@ -291,7 +291,7 @@ def run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, load
             output = fake_images.data
             if do_lgan:
                 output = decode(ae, output)
-            imgs_numpy = output.cpu().numpy()
+            imgs_numpy = output.cpu().detach().numpy()
             imgs_numpy = imgs_numpy.reshape(-1, 2048, 3)
 
             for sample in range(0,4):
