@@ -3,8 +3,6 @@ import torch
 import torch.nn as nn
 import open3d as o3d
 
-NOISE_DIM = 96
-
 dtype = torch.cuda.FloatTensor if torch.cuda.is_available() else torch.FloatTensor
 
 
@@ -23,12 +21,7 @@ def sample_noise(batch_size, dim, seed=None):
     if seed is not None:
         torch.manual_seed(seed)
 
-    # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
-    #return torch.rand((batch_size, dim)).type(dtype) * 2 - 1
     return torch.normal(0, 0.2, (batch_size, dim))
-
-    # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
 
 def rgan_discriminator(input_dim=3, seed=None):
@@ -159,9 +152,6 @@ def discriminator_loss(logits_real, logits_fake):
     Returns:
     - loss: PyTorch Tensor containing (scalar) the loss for the discriminator.
     """
-    loss = None
-    # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
     N = logits_real.size()
     true_labels = torch.ones(N).type(dtype)
     false_labels = torch.zeros(N).type(dtype)
@@ -169,7 +159,6 @@ def discriminator_loss(logits_real, logits_fake):
     loss_fake = bce_loss(logits_fake, false_labels)
     loss = loss_real + loss_fake
 
-    # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     return loss
 
 
@@ -183,14 +172,10 @@ def generator_loss(logits_fake):
     Returns:
     - loss: PyTorch Tensor containing the (scalar) loss for the generator.
     """
-    loss = None
-    # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
     N = logits_fake.size()
     true_labels = torch.ones(N).type(dtype)
     loss = bce_loss(logits_fake, true_labels)
 
-    # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     return loss
 
 
@@ -271,6 +256,7 @@ def run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, load
 
             g_fake_seed = sample_noise(batch_size, noise_size).type(dtype)
             fake_images = G(g_fake_seed).detach()
+            print(fake_images.size())
             logits_fake = D(fake_images.view(batch_size, 2048, 3).transpose(1, 2))
 
             d_error = discriminator_loss(logits_real, logits_fake)
