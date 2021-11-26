@@ -258,6 +258,8 @@ def run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, load
             fake_images = G(g_fake_seed).detach()
             if do_lgan:
                 fake_images = decode(ae, fake_images)
+
+            print(fake_images.size())
             logits_fake = D(fake_images.view(batch_size, 2048, 3).transpose(1, 2))
 
             d_error = discriminator_loss(logits_real, logits_fake)
