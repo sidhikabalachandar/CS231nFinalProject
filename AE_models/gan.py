@@ -269,7 +269,10 @@ def run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, load
             g_fake_seed = sample_noise(batch_size, noise_size).type(dtype)
             fake_images = G(g_fake_seed)
 
-            gen_logits_fake = D(fake_images.view(batch_size, 2048, 3).transpose(1, 2))
+            if do_lgan:
+                gen_logits_fake = D(fake_images)
+            else:
+                gen_logits_fake = D(fake_images.view(batch_size, 2048, 3).transpose(1, 2))
             g_error = generator_loss(gen_logits_fake)
             g_error.backward()
             G_solver.step()
