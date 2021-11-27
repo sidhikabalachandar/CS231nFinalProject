@@ -46,7 +46,7 @@ def main():
     maf_optimizer = torch.optim.Adam(maf_model.parameters(), lr=1e-3, weight_decay=1e-6)
 
 
-    run_a_maf(maf_model, maf_optimizer, trainloader, encoder_name, show_every=250,
+    run_a_maf(maf_model, maf_optimizer, trainloader, encoder_name, device, show_every=250,
               batch_size=batch_size, num_epochs=epochs, saved_models=saved_models, folder_name=folder_name,
               path_loss=path_loss)
 

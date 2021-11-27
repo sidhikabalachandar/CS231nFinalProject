@@ -122,9 +122,6 @@ class MADE(nn.Module):
         out = self.net(x)
         mu = out[:, :self.input_size]
         alpha = out[:, self.input_size:]
-        # print(x.size())
-        # print(mu.size())
-        # print(alpha.size())
         z = (x - mu) / torch.exp(alpha)
         log_det = -torch.sum(alpha, dim=1)
         # YOUR CODE ENDS HERE
@@ -153,7 +150,7 @@ class MAF(nn.Module):
             nf_blocks.append(PermuteLayer(self.input_size))  # permute dims
         self.nf = nn.Sequential(*nf_blocks)
 
-    def log_probs(self, x):
+    def log_probs(self, x, device):
         """
         Obtain log-likelihood p(x) through one pass of MADE
         :param x: Input data of size (batch_size, self.input_size)
@@ -161,7 +158,7 @@ class MAF(nn.Module):
         """
         # YOUR CODE STARTS HERE
         b, n = x.size()
-        log_prob = torch.zeros((b))
+        log_prob = torch.zeros((b)).to(device)
         z = x
         for module in self.nf:
             z, log_det = module.inverse(z)
@@ -174,13 +171,13 @@ class MAF(nn.Module):
 
         return log_prob
 
-    def loss(self, x):
+    def loss(self, x, device):
         """
         Compute the loss.
         :param x: Input data of size (batch_size, self.input_size)
         :return: loss. This should be a Python scalar.
         """
-        return -self.log_probs(x)
+        return -self.log_probs(x, device)
 
     def sample(self, device, n):
         """
@@ -194,7 +191,7 @@ class MAF(nn.Module):
             for flow in self.nf[::-1]:
                 x_sample, log_det = flow.forward(x_sample)
             x_sample = x_sample.view(n, self.input_size)
-            x_sample = x_sample.cpu().data.numpy()
+            #x_sample = x_sample.cpu().data.numpy()
 
         return x_sample
 
@@ -230,7 +227,7 @@ def decode(model, latent_code):
 
     return x
 
-def run_a_maf(maf_model, maf_optimizer, loader_train, ae_name,
+def run_a_maf(maf_model, maf_optimizer, loader_train, ae_name, device,
               show_every=250, batch_size=128, num_epochs=10, saved_models="saved_models",
               folder_name="folder_name", path_loss="path_loss", generated_samples_folder="Generated_Samples"):
     """
@@ -271,7 +268,7 @@ def run_a_maf(maf_model, maf_optimizer, loader_train, ae_name,
             real_data = torch.reshape(real_data, (-1, 2048, 3))
             real_data = real_data.transpose(1, 2)
             real_data = encode(ae, real_data)
-            loss = maf_model.loss(real_data)
+            loss = maf_model.loss(real_data, device)
 
             maf_optimizer.zero_grad()
             loss.backward()
