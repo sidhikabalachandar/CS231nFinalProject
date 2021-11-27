@@ -41,7 +41,7 @@ def main():
 
     # load model
     maf_model = MAF(
-        input_size=2, hidden_size=args.hidden_size, n_hidden=1, n_flows=args.n_flows
+        input_size=128, hidden_size=100, n_hidden=2, n_flows=args.n_flows
     ).to(device)
     maf_optimizer = torch.optim.Adam(maf_model.parameters(), lr=1e-3, weight_decay=1e-6)
 
