@@ -120,11 +120,11 @@ class MADE(nn.Module):
         """
         # YOUR CODE STARTS HERE
         out = self.net(x)
-        mu = out[:, :2]
-        alpha = out[:, 2:]
-        print(x.size())
-        print(mu.size())
-        print(alpha.size())
+        mu = out[:, :self.input_size]
+        alpha = out[:, self.input_size:]
+        # print(x.size())
+        # print(mu.size())
+        # print(alpha.size())
         z = (x - mu) / torch.exp(alpha)
         log_det = -torch.sum(alpha, dim=1)
         # YOUR CODE ENDS HERE
