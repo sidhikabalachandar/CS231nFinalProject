@@ -285,10 +285,8 @@ def run_a_maf(maf_model, maf_optimizer, loader_train, ae_name,
         file_handle.write(epoch_str + "\n")
 
         if (epoch + 1) % 50 == 0:
-            fake_images = maf_model.sample(device, n=1000)
-            output = fake_images.data
-            if do_lgan:
-                output = decode(ae, output)
+            fake_images = maf_model.sample(device, n=4)
+            output = decode(ae, fake_images.data)
             imgs_numpy = output.cpu().detach().numpy()
             imgs_numpy = imgs_numpy.reshape(-1, 2048, 3)
 
