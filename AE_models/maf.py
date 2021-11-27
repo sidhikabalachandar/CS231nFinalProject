@@ -122,6 +122,9 @@ class MADE(nn.Module):
         out = self.net(x)
         mu = out[:, :2]
         alpha = out[:, 2:]
+        print(x.size())
+        print(mu.size())
+        print(alpha.size())
         z = (x - mu) / torch.exp(alpha)
         log_det = -torch.sum(alpha, dim=1)
         # YOUR CODE ENDS HERE
