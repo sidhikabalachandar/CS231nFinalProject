@@ -97,12 +97,12 @@ class MADE(nn.Module):
 
         # YOUR CODE STARTS HERE
         b, n = z.size()
-        log_det = torch.zeros((b))
+        log_det = torch.zeros((b)).to(device)
         for i in range(n):
             out = self.net(x)
-            mu = out[:, :2]
+            mu = out[:, :self.input_size]
             mu = mu[:, i]
-            alpha = out[:, 2:]
+            alpha = out[:, self.input_size:]
             alpha = alpha[:, i]
             log_det += alpha
             x[:, i] = mu + z[:, i] * torch.exp(alpha)
