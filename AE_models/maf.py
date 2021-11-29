@@ -87,7 +87,7 @@ class MADE(nn.Module):
 
         return masks
 
-    def forward(self, z):
+    def forward(self, z, device):
         """
         Run the forward mapping (z -> x) for MAF through one MADE block.
         :param z: Input noise of size (batch_size, self.input_size)
@@ -189,7 +189,7 @@ class MAF(nn.Module):
         with torch.no_grad():
             x_sample = torch.randn(n, self.input_size).to(device)
             for flow in self.nf[::-1]:
-                x_sample, log_det = flow.forward(x_sample)
+                x_sample, log_det = flow.forward(x_sample, device)
             x_sample = x_sample.view(n, self.input_size)
             #x_sample = x_sample.cpu().data.numpy()
 
