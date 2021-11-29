@@ -285,7 +285,7 @@ def run_a_maf(maf_model, maf_optimizer, loader_train, ae_name, device,
         epoch_str = "epoch : {}/{}, Average train log-likelihood: {:.6f}".format(epoch + 1, num_epochs, -total_loss)
         file_handle.write(epoch_str + "\n")
 
-        if (epoch + 1) % 1 == 0:
+        if (epoch + 1) % 50 == 0:
             fake_images = maf_model.sample(device, n=4)
             output = decode(ae, fake_images.data)
             imgs_numpy = output.cpu().detach().numpy()
