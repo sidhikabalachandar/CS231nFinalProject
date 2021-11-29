@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 import os
+import open3d as o3d
 
 dtype = torch.cuda.FloatTensor if torch.cuda.is_available() else torch.FloatTensor
 
@@ -284,7 +285,7 @@ def run_a_maf(maf_model, maf_optimizer, loader_train, ae_name, device,
         epoch_str = "epoch : {}/{}, Average train log-likelihood: {:.6f}".format(epoch + 1, num_epochs, -total_loss)
         file_handle.write(epoch_str + "\n")
 
-        if (epoch + 1) % 50 == 0:
+        if (epoch + 1) % 1 == 0:
             fake_images = maf_model.sample(device, n=4)
             output = decode(ae, fake_images.data)
             imgs_numpy = output.cpu().detach().numpy()
@@ -298,9 +299,8 @@ def run_a_maf(maf_model, maf_optimizer, loader_train, ae_name, device,
                                                       "epoch_{}_sample_{}.ply".format(epoch + 1, sample)),
                                          pcd_output)
 
-            torch.save(G, "{}/generator_{}.pt".format(os.path.join(saved_models, folder_name), epoch))
-            torch.save(D, "{}/discriminator_{}.pt".format(os.path.join(saved_models, folder_name), epoch))
 
+                torch.save(maf_model, "{}/MAF_{}.pt".format(os.path.join(saved_models, folder_name), epoch))
     file_handle.close()
 
     return images
