@@ -28,7 +28,7 @@ class PermuteLayer(nn.Module):
         super(PermuteLayer, self).__init__()
         self.perm = np.array(np.arange(0, num_inputs)[::-1])
 
-    def forward(self, inputs):
+    def forward(self, inputs, forward):
         return inputs[:, self.perm], torch.zeros(
             inputs.size(0), 1, device=inputs.device
         )
