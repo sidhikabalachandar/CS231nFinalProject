@@ -1,7 +1,5 @@
 
-# python calculate_CD.py -m saved_models/lgan_train_sofa/generator_499.pt -t splits/sofa/train.txt -y gan -a saved_models/pointnet_train_sofa/best_490.pt
-# python calculate_CD.py -m saved_models/maf_train_sofa/MAF_499.pt -t splits/sofa/train.txt -y maf -a saved_models/pointnet_train_sofa/best_490.pt
-# python calculate_CD.py -m saved_models/maf_train_sofa/MAF_499.pt -t splits/sofa/train.txt -y data -a saved_models/pointnet_train_sofa/best_490.pt
+# python calculate_CD.py -g saved_models/lgan_train_sofa/generator_499.pt -f saved_models/maf_train_sofa/MAF_499.pt -t splits/sofa/train.txt -a saved_models/pointnet_train_sofa/best_490.pt
 
 import torch
 import argparse
@@ -45,13 +43,16 @@ def main():
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size, shuffle=True, num_workers=2)
 
     # Load Model
-    model = torch.load(args.model_name)
-    model.eval()
+    gan_model = torch.load(args.gan_model_name)
+    gan_model.eval()
+
+    flow_model = torch.load(args.flow_model_name)
+    flow_model.eval()
 
     ae = load_ae(args.ae_name)
 
-    gan_example_fake = get_gan_data(model, ae, batch_size, noise_size, num_points)
-    flow_example_fake = get_flow_data(model, ae, batch_size, num_points)
+    gan_example_fake = get_gan_data(gan_model, ae, batch_size, noise_size, num_points)
+    flow_example_fake = get_flow_data(flow_model, ae, batch_size, num_points)
     for i, (example, _) in enumerate(trainloader): # get first batch of real examples
         if i == 0:
             example_real = example.type(dtype)
