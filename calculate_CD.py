@@ -1,6 +1,9 @@
 
-import torch
+# python calculate_CD.py -m saved_models/lgan_train_soft/generator_499.pt -t splits/sofa/train.txt -y gan -a saved_models/pointnet_train_sofa/best_490.pt
+# python calculate_CD.py -m saved_models/maf_train_soft/MAF_499.pt -t splits/sofa/train.txt -y maf -a saved_models/pointnet_train_sofa/best_490.pt
 
+import torch
+import argparse
 from PointCloudDataset import PointCloudDataset
 import ChamferDistancePytorch.chamfer3D.dist_chamfer_3D as chamfer
 
@@ -21,9 +24,10 @@ def get_gan_data(G, ae, batch_size, noise_size):
     fake_images = decode(ae, fake_images)
     return fake_images
     
-def get_flow_data(model, batch_size):
+def get_flow_data(model, ae, batch_size):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     fake_images = model.sample(device, n=batch_size)
+    fake_images = decode(ae, fake_images)
     return fake_images
 
 def main():
@@ -31,7 +35,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-m', '--model_name',  required=True, help = 'Path to model (.pt).')
     parser.add_argument('-t', '--train_path', required=True,  help='Path to training .txt file.')
-    parser.add_argument('-y', '--type', required=True,  help='Either "gan" or "flow".')
+    parser.add_argument('-y', '--type', required=True,  help='Either "gan" or "maf".')
     parser.add_argument('-a', '--ae_name',  required=True, help = 'Path to ae model (.pt).')
     args = parser.parse_args()
 
@@ -49,8 +53,8 @@ def main():
 
     if args.type == "gan":
         example_fake = get_gan_data(model, ae, batch_size, noise_size)
-    elif args.type == "flow":
-        example_fake = get_flow_data(model)
+    elif args.type == "maf":
+        example_fake = get_flow_data(model, ae, batch_size)
 
     
     example_real = trainloader[0][0] # get first batch of real examples
