@@ -71,7 +71,7 @@ def main():
                 break
 
     criterion = chamfer.chamfer_3DDist()
-    average_CD = getCD(criterion, example_fake, example_real)
+    average_CD = getCD(criterion, example_fake, example_fake)
     print('Average CD: {}'.format(average_CD))
 
 if __name__ == "__main__":
