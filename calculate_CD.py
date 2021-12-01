@@ -88,7 +88,7 @@ def main():
     df = pd.DataFrame.from_dict(dict)
     print(df)
 
-    sns.histplot(data=df, x="data", hue="type")
+    sns.histplot(data=df, x="data", hue="type", element="poly")
     plt.savefig('{}.png'.format(args.graph_name))
 
 
