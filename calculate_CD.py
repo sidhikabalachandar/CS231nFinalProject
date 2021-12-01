@@ -5,6 +5,7 @@ import torch
 import argparse
 from PointCloudDataset import PointCloudDataset
 import ChamferDistancePytorch.chamfer3D.dist_chamfer_3D as chamfer
+import seaborn as sns
 
 from AE_models.gan import *
 from AE_models.maf import *
@@ -74,10 +75,13 @@ def main():
     gan_average_CD = getCD(criterion, gan_example_fake, example_real)
     flow_average_CD = getCD(criterion, flow_example_fake, example_real)
     data_average_CD = getCD(criterion, data_example_fake, example_real)
-    print(gan_average_CD.size(), flow_average_CD.size(), data_average_CD.size())
     print('GAN Average CD: {}'.format(torch.mean(gan_average_CD)))
     print('MAF Average CD: {}'.format(torch.mean(flow_average_CD)))
     print('Data Average CD: {}'.format(torch.mean(data_average_CD)))
+
+    sns.histplot(data=gan_average_CD, x="gan")
+    sns.histplot(data=flow_average_CD, x="maf")
+    sns.histplot(data=data_average_CD, x="data")
 
 if __name__ == "__main__":
     main()
