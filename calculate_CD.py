@@ -14,7 +14,7 @@ def getCD(criterion, pc_1, pc_2):
 
     # pc_1 & pc_2 are both of size (batch_size, num_pts, 3)
     
-    dist1, dist2, _, _ = criterion (torch.reshape(pc_1), torch.reshape(pc_2))
+    dist1, dist2, _, _ = criterion(pc_1, pc_2)
     dist = torch.mean(torch.sum(dist1 + dist2, axis = 1))
     return dist
 
