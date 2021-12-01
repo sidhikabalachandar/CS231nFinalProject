@@ -31,14 +31,14 @@ def get_flow_data(model, ae, batch_size, num_points):
 def main():
     # Parse Arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument('-m', '--model_name',  required=True, help = 'Path to model (.pt).')
+    parser.add_argument('-g', '--gan_model_name',  required=True, help = 'Path to model (.pt).')
+    parser.add_argument('-f', '--flow_model_name', required=True, help='Path to model (.pt).')
     parser.add_argument('-t', '--train_path', required=True,  help='Path to training .txt file.')
-    parser.add_argument('-y', '--type', required=True,  help='Either "gan", "maf", "data".')
     parser.add_argument('-a', '--ae_name',  required=True, help = 'Path to ae model (.pt).')
     args = parser.parse_args()
 
     #Load Train Data
-    batch_size = 256
+    batch_size = 1000
     noise_size=128
     num_points = 2048
     trainset = PointCloudDataset(path_to_data = args.train_path)
@@ -50,29 +50,37 @@ def main():
 
     ae = load_ae(args.ae_name)
 
-    if args.type == "gan":
-        example_fake = get_gan_data(model, ae, batch_size, noise_size, num_points)
-    elif args.type == "maf":
-        example_fake = get_flow_data(model, ae, batch_size, num_points)
-
-    if args.type != "data":
-        for example_real, _ in trainloader: # get first batch of real examples
-            example_real = example_real.type(dtype)
+    gan_example_fake = get_gan_data(model, ae, batch_size, noise_size, num_points)
+    flow_example_fake = get_flow_data(model, ae, batch_size, num_points)
+    for i, (example, _) in enumerate(trainloader): # get first batch of real examples
+        if i == 0:
+            example_real = example.type(dtype)
             example_real = torch.reshape(example_real, (-1, 2048, 3))
+        if i == 1:
+            data_example_fake = example.type(dtype)
+            data_example_fake = torch.reshape(data_example_fake, (-1, 2048, 3))
             break
-    else:
-        for i, (example, _) in enumerate(trainloader): # get first batch of real examples
-            if i == 0:
-                example_real = example.type(dtype)
-                example_real = torch.reshape(example_real, (-1, 2048, 3))
-            if i == 1:
-                example_fake = example.type(dtype)
-                example_fake = torch.reshape(example_fake, (-1, 2048, 3))
-                break
 
     criterion = chamfer.chamfer_3DDist()
-    average_CD = getCD(criterion, example_fake, example_fake)
+
+    for i in range(num_points):
+        fake = gan_example_fake[i, :, :].repeat(batch_size, -1, -1)
+        print(fake)
+        print(fake.size())
+        assert (1 == 2)
+        average_CD += getCD(criterion, fake, example_real)
+
+
+    # average_CD = getCD(criterion, flow_example_fake, example_real)
+    # average_CD = getCD(criterion, data_example_fake, example_real)
     print('Average CD: {}'.format(average_CD))
+
+    for i in range(num_points):
+        for j in range(num_points):
+            fake = gan_example_fake[i, :, :].repeat(batch_size, -1, -1)
+            real = example_real[j, :, :].repeat(batch_size, -1, -1)
+            print(fake)
+            average_CD = getCD(criterion, fake, example_real)
 
 if __name__ == "__main__":
     main()
