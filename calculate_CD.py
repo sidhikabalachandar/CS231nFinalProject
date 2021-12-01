@@ -1,6 +1,8 @@
 
 # python calculate_CD.py -r saved_models/rgan_train_sofa/generator_49.pt -l saved_models/lgan_train_sofa/generator_49.pt -f saved_models/maf_train_sofa/MAF_49.pt -t splits/sofa/train.txt -a saved_models/pointnet_train_sofa/best_490.pt -n 49_epochs
 
+# python calculate_CD.py -r saved_models/rgan_train_sofa/generator_499.pt -l saved_models/lgan_train_sofa/generator_499.pt -w saved_models/wgan_train_sofa/generator_499.pt -f saved_models/maf_train_sofa/MAF_499.pt -t splits/sofa/train.txt -a saved_models/pointnet_train_sofa/best_490.pt -n 499_epochs
+
 import torch
 import argparse
 from PointCloudDataset import PointCloudDataset
@@ -78,7 +80,7 @@ def main():
 
     rgan_example_fake = get_rgan_data(rgan_model, fake_batch_size, noise_size, num_points)
     lgan_example_fake = get_lgan_data(lgan_model, ae, fake_batch_size, noise_size, num_points)
-    wgan_example_fake = get_wgan_data(wgan_model, ae, fake_batch_size, noise_size, num_points)
+    wgan_example_fake = get_lgan_data(wgan_model, ae, fake_batch_size, noise_size, num_points)
     flow_example_fake = get_flow_data(flow_model, ae, fake_batch_size, num_points)
     for i, (example, _) in enumerate(trainloader): # get first batch of real examples
         if i == 0:
