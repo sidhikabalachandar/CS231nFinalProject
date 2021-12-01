@@ -1,6 +1,7 @@
 
 # python calculate_CD.py -r saved_models/rgan_train_sofa/generator_49.pt -l saved_models/lgan_train_sofa/generator_49.pt -f saved_models/maf_train_sofa/MAF_49.pt -t splits/sofa/train.txt -a saved_models/pointnet_train_sofa/best_490.pt -n 49_epochs
 
+# python calculate_CD.py -r saved_models/rgan_train_sofa/generator_49.pt -l saved_models/lgan_train_sofa/generator_49.pt -w saved_models/wgan_train_sofa/generator_49.pt -f saved_models/maf_train_sofa/MAF_49.pt -t splits/sofa/train.txt -a saved_models/pointnet_train_sofa/best_490.pt -n 49_epochs
 # python calculate_CD.py -r saved_models/rgan_train_sofa/generator_499.pt -l saved_models/lgan_train_sofa/generator_499.pt -w saved_models/wgan_train_sofa/generator_499.pt -f saved_models/maf_train_sofa/MAF_499.pt -t splits/sofa/train.txt -a saved_models/pointnet_train_sofa/best_490.pt -n 499_epochs
 
 import torch
@@ -104,8 +105,8 @@ def main():
     print('MAF Average CD: {}'.format(torch.mean(flow_average_CD)))
     print('Data Average CD: {}'.format(torch.mean(data_average_CD)))
 
-    types = ["rgan" for _ in range(fake_batch_size)] + ["lgan" for _ in range(fake_batch_size)] + ["wgan" for _ in range(fake_batch_size)] + ["maf" for _ in range(fake_batch_size)] + ["data" for _ in range(fake_batch_size)]
-    data = rgan_average_CD.tolist() + lgan_average_CD.tolist() + wgan_average_CD.tolist() + flow_average_CD.tolist() + data_average_CD.tolist()
+    types = ["lgan" for _ in range(fake_batch_size)] + ["wgan" for _ in range(fake_batch_size)] + ["maf" for _ in range(fake_batch_size)] + ["data" for _ in range(fake_batch_size)]
+    data = lgan_average_CD.tolist() + wgan_average_CD.tolist() + flow_average_CD.tolist() + data_average_CD.tolist()
     dict = {"type": types, "data": data}
     df = pd.DataFrame.from_dict(dict)
 
