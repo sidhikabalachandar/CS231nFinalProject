@@ -13,7 +13,7 @@ from AE_models.maf import *
 def getCD(criterion, pc_1, pc_2):
 
     # pc_1 & pc_2 are both of size (batch_size, num_pts, 3)
-    
+    print(pc_1.size(), pc_2.size())
     dist1, dist2, _, _ = criterion(pc_1, pc_2)
     dist = torch.mean(torch.sum(dist1 + dist2, axis = 1))
     return dist
