@@ -64,24 +64,27 @@ def main():
 
     criterion = chamfer.chamfer_3DDist()
 
-    for i in range(num_points):
+    average_CD = 0
+    for i in range(batch_size):
         fake = gan_example_fake[i, :, :].repeat(batch_size, 1, 1)
-        print(fake)
-        print(fake.size())
-        assert (1 == 2)
         average_CD += getCD(criterion, fake, example_real)
 
 
     # average_CD = getCD(criterion, flow_example_fake, example_real)
     # average_CD = getCD(criterion, data_example_fake, example_real)
-    print('Average CD: {}'.format(average_CD))
+    print('Average CD: {}'.format(average_CD / batch_size))
 
-    for i in range(num_points):
-        for j in range(num_points):
-            fake = gan_example_fake[i, :, :].repeat(batch_size, 1, 1)
-            real = example_real[j, :, :].repeat(batch_size, 1, 1)
+    average_CD = 0
+    for i in range(batch_size):
+        sub_avg = 0
+        for j in range(batch_size):
+            fake = gan_example_fake[i, :, :]
+            real = example_real[j, :, :]
             print(fake)
-            average_CD = getCD(criterion, fake, example_real)
+            sub_avg += getCD(criterion, fake.reshape(1, num_points, 3), real.reshape(1, num_points, 3))
+        average_CD += sub_avg / batch_size
+
+    print('Average CD: {}'.format(average_CD / batch_size))
 
 if __name__ == "__main__":
     main()
