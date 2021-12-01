@@ -200,7 +200,7 @@ def loss_wasserstein_gp_d(g, d, x_real, noise_size, device):
     r = r.permute(1, 0)
     lda = 10
     grad = torch.autograd.grad(d(r).sum(), r, create_graph=True)
-    grad = torch.linalg.norm(grad, dim=1)
+    grad = torch.linalg.norm(grad[0], dim=1)
     term_3 = lda * torch.mean((grad - 1) ** 2)
     d_loss = term_1 - term_2 + term_3
 
