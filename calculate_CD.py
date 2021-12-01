@@ -41,7 +41,7 @@ def main():
     args = parser.parse_args()
 
     #Load Train Data
-    batch_size = 2
+    batch_size = 1000
     noise_size=128
     num_points = 2048
     trainset = PointCloudDataset(path_to_data = args.train_path)
