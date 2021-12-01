@@ -10,12 +10,13 @@ from AE_models.gan import *
 from AE_models.maf import *
 
 def getCD(criterion, fake, real):
-    batch_size = fake.size()[0]
-    rep_fake = torch.repeat_interleave(fake, batch_size, dim=0)
-    rep_real = real.repeat(batch_size, 1, 1)
+    fake_batch_size = fake.size()[0]
+    real_batch_size = real.size()[0]
+    rep_fake = torch.repeat_interleave(fake, real_batch_size, dim=0)
+    rep_real = real.repeat(fake_batch_size, 1, 1)
     dist1, dist2, _, _ = criterion(rep_fake, rep_real)
     dist = torch.sum(dist1 + dist2, axis = 1)
-    dist = dist.reshape((batch_size, batch_size))
+    dist = dist.reshape((fake_batch_size, real_batch_size))
     dist = torch.mean(dist, dim=1)
     return dist
 
@@ -41,11 +42,12 @@ def main():
     args = parser.parse_args()
 
     #Load Train Data
-    batch_size = 256
+    fake_batch_size = 10
+    real_batch_size = 100
     noise_size=128
     num_points = 2048
     trainset = PointCloudDataset(path_to_data = args.train_path)
-    trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size, shuffle=True, num_workers=2)
+    trainloader = torch.utils.data.DataLoader(trainset, batch_size=real_batch_size, shuffle=True, num_workers=2)
 
     # Load Model
     gan_model = torch.load(args.gan_model_name)
@@ -56,8 +58,8 @@ def main():
 
     ae = load_ae(args.ae_name)
 
-    gan_example_fake = get_gan_data(gan_model, ae, batch_size, noise_size, num_points)
-    flow_example_fake = get_flow_data(flow_model, ae, batch_size, num_points)
+    gan_example_fake = get_gan_data(gan_model, ae, fake_batch_size, noise_size, num_points)
+    flow_example_fake = get_flow_data(flow_model, ae, fake_batch_size, num_points)
     for i, (example, _) in enumerate(trainloader): # get first batch of real examples
         if i == 0:
             example_real = example.type(dtype)
