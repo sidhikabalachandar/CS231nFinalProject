@@ -64,7 +64,7 @@ def main():
 
     criterion = chamfer.chamfer_3DDist()
     print(gan_example_fake.size())
-    fake = torch.repeat_interleave(gan_example_fake, torch.tensor([batch_size, 1, 1]))
+    fake = torch.repeat_interleave(gan_example_fake, batch_size, dim=0)
     real = example_real.repeat(batch_size, 1, 1)
     average_CD = getCD(criterion, fake, real)
     print(average_CD.size())
