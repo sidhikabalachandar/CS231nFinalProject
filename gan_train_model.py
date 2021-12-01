@@ -5,7 +5,7 @@ import argparse
 from AE_models.gan import *
 
 
-# python gan_train_model.py -t splits/sofa/train.txt -y wgan -n rgan_train_sofa
+# python gan_train_model.py -t splits/sofa/train.txt -y wgan -n wgan_train_sofa -m saved_models/pointnet_train_sofa/best_490.pt
 
 # Global
 saved_models = "saved_models"
@@ -56,7 +56,7 @@ def main():
     G_solver = optim.Adam(G.parameters(), lr=learning_rate)
 
     if args.model_type == "wgan":
-        run_a_wgan(D, G, D_solver, G_solver, loss_wasserstein_gp_d, loss_wasserstein_gp_g, trainloader, encoder_name,
+        run_a_wgan(D, G, D_solver, G_solver, loss_wasserstein_gp_d, loss_wasserstein_gp_g, trainloader, encoder_name, device,
                   show_every=250,
                   batch_size=batch_size, noise_size=128, num_epochs=epochs, saved_models=saved_models,
                   folder_name=folder_name,

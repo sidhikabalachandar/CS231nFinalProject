@@ -179,7 +179,7 @@ def generator_loss(logits_fake):
     return loss
 
 
-def loss_wasserstein_gp_d(g, d, x_real, noise_size):
+def loss_wasserstein_gp_d(g, d, x_real, noise_size, device):
     """
     Arguments:
     - g (codebase.network.Generator): The generator network
@@ -195,7 +195,7 @@ def loss_wasserstein_gp_d(g, d, x_real, noise_size):
 
     term_1 = torch.mean(d(g(z)))
     term_2 = torch.mean(d(x_real))
-    alpha = torch.rand((batch_size))
+    alpha = torch.rand((batch_size)).to(device)
     r = alpha * g(z).permute((1, 0)) + (1 - alpha) * x_real.permute((1, 0))
     r = r.permute(1, 0)
     lda = 10
@@ -357,7 +357,7 @@ def run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, load
     return images
 
 
-def run_a_wgan(D, G, D_solver, G_solver, d_loss, g_loss, loader_train, ae_name,
+def run_a_wgan(D, G, D_solver, G_solver, d_loss, g_loss, loader_train, ae_name, device,
                 show_every=250, batch_size=128, noise_size=96, num_epochs=10, saved_models="saved_models",
                 folder_name="folder_name", path_loss="path_loss", generated_samples_folder="Generated_Samples"):
     """
@@ -395,7 +395,7 @@ def run_a_wgan(D, G, D_solver, G_solver, d_loss, g_loss, loader_train, ae_name,
             real_data = torch.reshape(real_data, (-1, 2048, 3))
             real_data = real_data.transpose(1, 2)
             real_data = encode(ae, real_data) # batch size x 128
-            d_error = d_loss(G, D, real_data, noise_size)
+            d_error = d_loss(G, D, real_data, noise_size, device)
             d_error.backward()
             D_solver.step()
 
