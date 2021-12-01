@@ -12,7 +12,6 @@ from AE_models.gan import *
 from AE_models.maf import *
 
 def getCD(criterion, pc_1, pc_2):
-    print(pc_1.size(), pc_2.size())
     dist1, dist2, _, _ = criterion(pc_1, pc_2)
     dist = torch.mean(torch.sum(dist1 + dist2, axis = 1))
     return dist
@@ -64,11 +63,9 @@ def main():
     else:
         for i, (example, _) in enumerate(trainloader): # get first batch of real examples
             if i == 0:
-                print('hi 1')
                 example_real = example.type(dtype)
                 example_real = torch.reshape(example_real, (-1, 2048, 3))
             if i == 1:
-                print('hi 2')
                 example_fake = example.type(dtype)
                 example_fake = torch.reshape(example_fake, (-1, 2048, 3))
                 break
