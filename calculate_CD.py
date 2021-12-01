@@ -80,13 +80,14 @@ def main():
     print('MAF Average CD: {}'.format(torch.mean(flow_average_CD)))
     print('Data Average CD: {}'.format(torch.mean(data_average_CD)))
 
-    dict = {"gan": gan_average_CD.tolist(), "maf": flow_average_CD.tolist(), "data": data_average_CD.tolist()}
+    types = ["gan" for _ in range(fake_batch_size)] + ["maf" for _ in range(fake_batch_size)] + ["data" for _ in range(fake_batch_size)]
+    data = gan_average_CD.tolist() + flow_average_CD.tolist() + data_average_CD.tolist()
+    dict = {"type": types, "data": data}
     df = pd.DataFrame.from_dict(dict)
     print(df)
 
-    sns.histplot(data=gan_average_CD, x="gan")
-    sns.histplot(data=flow_average_CD, x="maf")
-    sns.histplot(data=data_average_CD, x="data")
+    sns.histplot(data=df, x="data", hue="type")
+    
 
 if __name__ == "__main__":
     main()
