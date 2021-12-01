@@ -1,6 +1,7 @@
 
 # python calculate_CD.py -m saved_models/lgan_train_sofa/generator_499.pt -t splits/sofa/train.txt -y gan -a saved_models/pointnet_train_sofa/best_490.pt
 # python calculate_CD.py -m saved_models/maf_train_sofa/MAF_499.pt -t splits/sofa/train.txt -y maf -a saved_models/pointnet_train_sofa/best_490.pt
+# python calculate_CD.py -m null -t splits/sofa/train.txt -y data -a saved_models/pointnet_train_sofa/best_490.pt
 
 import torch
 import argparse
@@ -33,7 +34,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-m', '--model_name',  required=True, help = 'Path to model (.pt).')
     parser.add_argument('-t', '--train_path', required=True,  help='Path to training .txt file.')
-    parser.add_argument('-y', '--type', required=True,  help='Either "gan" or "maf".')
+    parser.add_argument('-y', '--type', required=True,  help='Either "gan", "maf", "data".')
     parser.add_argument('-a', '--ae_name',  required=True, help = 'Path to ae model (.pt).')
     args = parser.parse_args()
 
@@ -55,14 +56,23 @@ def main():
     elif args.type == "maf":
         example_fake = get_flow_data(model, ae, batch_size, num_points)
 
-    for example_real, _ in trainloader: # get first batch of real examples
-        example_real = example_real.type(dtype)
-        example_real = torch.reshape(example_real, (-1, 2048, 3))
-        break
+    if args.type != "data":
+        for example_real, _ in trainloader: # get first batch of real examples
+            example_real = example_real.type(dtype)
+            example_real = torch.reshape(example_real, (-1, 2048, 3))
+            break
+    else:
+        for i, (example_real, _) in enumerate(trainloader): # get first batch of real examples
+            if i == 0:
+                example_real = example_real.type(dtype)
+                example_real = torch.reshape(example_real, (-1, 2048, 3))
+            if i == 1:
+                example_fake = example_real.type(dtype)
+                example_fake = torch.reshape(example_fake, (-1, 2048, 3))
+                break
 
     criterion = chamfer.chamfer_3DDist()
-    CD = getCD(criterion, example_fake, example_real)
-    average_CD = CD/(batch_size*batch_size)
+    average_CD = getCD(criterion, example_fake, example_real)
     print('Average CD: {}'.format(average_CD))
 
 if __name__ == "__main__":

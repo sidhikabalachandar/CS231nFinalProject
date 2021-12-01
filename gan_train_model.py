@@ -1,13 +1,12 @@
 import os
 import torch
-# import numpy as np
 import torch.optim as optim
 from PointCloudDataset import PointCloudDataset
 import argparse
 from AE_models.gan import *
 
-# Get Chamfer Distance
-# import ChamferDistancePytorch.chamfer3D.dist_chamfer_3D as chamfer
+
+# python gan_train_model.py -t splits/sofa/train.txt --rgan -n rgan_train_sofa
 
 # Global
 saved_models = "saved_models"
