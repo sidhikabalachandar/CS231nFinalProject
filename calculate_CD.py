@@ -63,16 +63,18 @@ def main():
             break
 
     criterion = chamfer.chamfer_3DDist()
-    print(gan_example_fake.size())
     fake = torch.repeat_interleave(gan_example_fake, batch_size, dim=0)
     real = example_real.repeat(batch_size, 1, 1)
-    average_CD = getCD(criterion, fake, real)
-    print(average_CD.size())
+    average_CD = getCD(criterion, fake, real).reshape((batch_size, batch_size))
+    print(torch.mean(average_CD, dim=0))
+    print(torch.mean(average_CD, dim=1))
 
     average_CD = 0
     for i in range(batch_size):
         fake = gan_example_fake[i, :, :].repeat(batch_size, 1, 1)
-        average_CD += getCD(criterion, fake, example_real)
+        val = torch.mean(getCD(criterion, fake, example_real))
+        print(val)
+        average_CD += val
 
 
     # average_CD = getCD(criterion, flow_example_fake, example_real)
