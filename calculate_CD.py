@@ -80,7 +80,6 @@ def main():
         for j in range(batch_size):
             fake = gan_example_fake[i, :, :]
             real = example_real[j, :, :]
-            print(fake)
             sub_avg += getCD(criterion, fake.reshape(1, num_points, 3), real.reshape(1, num_points, 3))
         average_CD += sub_avg / batch_size
 
