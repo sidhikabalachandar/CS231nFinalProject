@@ -65,7 +65,7 @@ def main():
     criterion = chamfer.chamfer_3DDist()
 
     for i in range(num_points):
-        fake = gan_example_fake[i, :, :].repeat(batch_size, -1, -1)
+        fake = gan_example_fake[i, :, :].repeat(batch_size, 1, 1)
         print(fake)
         print(fake.size())
         assert (1 == 2)
@@ -79,7 +79,7 @@ def main():
     for i in range(num_points):
         for j in range(num_points):
             fake = gan_example_fake[i, :, :].repeat(batch_size, 1, 1)
-            real = example_real[j, :, :].repeat(batch_size, -1, -1)
+            real = example_real[j, :, :].repeat(batch_size, 1, 1)
             print(fake)
             average_CD = getCD(criterion, fake, example_real)
 
