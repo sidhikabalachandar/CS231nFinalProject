@@ -1,5 +1,5 @@
 
-# python calculate_CD.py -g saved_models/lgan_train_sofa/generator_49.pt -f saved_models/maf_train_sofa/MAF_49.pt -t splits/sofa/train.txt -a saved_models/pointnet_train_sofa/best_490.pt -n 49_epochs
+# python calculate_CD.py -r saved_models/rgan_train_sofa/generator_49.pt -l saved_models/lgan_train_sofa/generator_49.pt -f saved_models/maf_train_sofa/MAF_49.pt -t splits/sofa/train.txt -a saved_models/pointnet_train_sofa/best_490.pt -n 49_epochs
 
 import torch
 import argparse
@@ -23,10 +23,15 @@ def getCD(criterion, fake, real):
     dist = torch.mean(dist, dim=1)
     return dist
 
-def get_gan_data(G, ae, batch_size, noise_size, num_points):
+def get_lgan_data(G, ae, batch_size, noise_size, num_points):
     g_fake_seed = sample_noise(batch_size, noise_size).type(dtype)
     fake_images = G(g_fake_seed)
     fake_images = decode(ae, fake_images).reshape((batch_size, num_points, 3))
+    return fake_images
+
+def get_rgan_data(G, batch_size, noise_size, num_points):
+    g_fake_seed = sample_noise(batch_size, noise_size).type(dtype)
+    fake_images = G(g_fake_seed).reshape((batch_size, num_points, 3))
     return fake_images
     
 def get_flow_data(model, ae, batch_size, num_points):
@@ -66,8 +71,8 @@ def main():
 
     ae = load_ae(args.ae_name)
 
-    rgan_example_fake = get_gan_data(rgan_model, ae, fake_batch_size, noise_size, num_points)
-    lgan_example_fake = get_gan_data(lgan_model, ae, fake_batch_size, noise_size, num_points)
+    rgan_example_fake = get_rgan_data(rgan_model, fake_batch_size, noise_size, num_points)
+    lgan_example_fake = get_lgan_data(lgan_model, ae, fake_batch_size, noise_size, num_points)
     flow_example_fake = get_flow_data(flow_model, ae, fake_batch_size, num_points)
     for i, (example, _) in enumerate(trainloader): # get first batch of real examples
         if i == 0:
