@@ -11,7 +11,7 @@ from AE_models.maf import *
 
 def getCD(criterion, pc_1, pc_2):
     dist1, dist2, _, _ = criterion(pc_1, pc_2)
-    dist = torch.mean(torch.sum(dist1 + dist2, axis = 1))
+    dist = torch.sum(dist1 + dist2, axis = 1)
     return dist
 
 def get_gan_data(G, ae, batch_size, noise_size, num_points):
@@ -64,6 +64,11 @@ def main():
 
     criterion = chamfer.chamfer_3DDist()
 
+    fake = gan_example_fake.repeat_interleave(batch_size, 1, 1)
+    real = example_real.repeat(batch_size, 1, 1)
+    average_CD = getCD(criterion, fake, real)
+    print(average_CD.size())
+
     average_CD = 0
     for i in range(batch_size):
         fake = gan_example_fake[i, :, :].repeat(batch_size, 1, 1)
@@ -72,17 +77,6 @@ def main():
 
     # average_CD = getCD(criterion, flow_example_fake, example_real)
     # average_CD = getCD(criterion, data_example_fake, example_real)
-    print('Average CD: {}'.format(average_CD / batch_size))
-
-    average_CD = 0
-    for i in range(batch_size):
-        sub_avg = 0
-        for j in range(batch_size):
-            fake = gan_example_fake[i, :, :]
-            real = example_real[j, :, :]
-            sub_avg += getCD(criterion, fake.reshape(1, num_points, 3), real.reshape(1, num_points, 3))
-        average_CD += sub_avg / batch_size
-
     print('Average CD: {}'.format(average_CD / batch_size))
 
 if __name__ == "__main__":
