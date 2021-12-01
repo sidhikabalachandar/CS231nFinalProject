@@ -55,7 +55,7 @@ def main():
     D_solver = optim.Adam(D.parameters(), lr=learning_rate)
     G_solver = optim.Adam(G.parameters(), lr=learning_rate)
 
-    if args.type == "wgan":
+    if args.model_type == "wgan":
         run_a_wgan(D, G, D_solver, G_solver, loss_wasserstein_gp_d, loss_wasserstein_gp_g, trainloader, encoder_name,
                   show_every=250,
                   batch_size=batch_size, noise_size=128, num_epochs=epochs, saved_models=saved_models,
