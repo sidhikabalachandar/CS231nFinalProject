@@ -1,5 +1,5 @@
 
-# python calculate_CD.py -g saved_models/lgan_train_sofa/generator_499.pt -f saved_models/maf_train_sofa/MAF_499.pt -t splits/sofa/train.txt -a saved_models/pointnet_train_sofa/best_490.pt
+# python calculate_CD.py -g saved_models/lgan_train_sofa/generator_499.pt -f saved_models/maf_train_sofa/MAF_499.pt -t splits/sofa/train.txt -a saved_models/pointnet_train_sofa/best_490.pt -n 499_epochs
 
 import torch
 import argparse
@@ -7,6 +7,7 @@ from PointCloudDataset import PointCloudDataset
 import ChamferDistancePytorch.chamfer3D.dist_chamfer_3D as chamfer
 import seaborn as sns
 import pandas as pd
+import matplotlib.pyplot as plt
 
 from AE_models.gan import *
 from AE_models.maf import *
@@ -41,6 +42,7 @@ def main():
     parser.add_argument('-f', '--flow_model_name', required=True, help='Path to model (.pt).')
     parser.add_argument('-t', '--train_path', required=True,  help='Path to training .txt file.')
     parser.add_argument('-a', '--ae_name',  required=True, help = 'Path to ae model (.pt).')
+    parser.add_argument('-n', '--graph_name', required=True, help='Name of graph.')
     args = parser.parse_args()
 
     #Load Train Data
@@ -87,7 +89,8 @@ def main():
     print(df)
 
     sns.histplot(data=df, x="data", hue="type")
-    
+    plt.savefig('{}.png'.format(args.graph_name))
+
 
 if __name__ == "__main__":
     main()
