@@ -357,7 +357,7 @@ def run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, load
     return images
 
 
-def run_a_wgan(D, G, D_solver, G_solver, d_loss, g_loss, loader_train, do_lgan, ae_name,
+def run_a_wgan(D, G, D_solver, G_solver, d_loss, g_loss, loader_train, ae_name,
                 show_every=250, batch_size=128, noise_size=96, num_epochs=10, saved_models="saved_models",
                 folder_name="folder_name", path_loss="path_loss", generated_samples_folder="Generated_Samples"):
     """
@@ -384,8 +384,7 @@ def run_a_wgan(D, G, D_solver, G_solver, d_loss, g_loss, loader_train, do_lgan, 
     iter_count = 0
 
 
-    if do_lgan:
-        ae = load_ae(ae_name)
+    ae = load_ae(ae_name)
 
     for epoch in range(num_epochs):
         for x, _ in loader_train:
@@ -419,8 +418,7 @@ def run_a_wgan(D, G, D_solver, G_solver, d_loss, g_loss, loader_train, do_lgan, 
             g_fake_seed = sample_noise(batch_size, noise_size).type(dtype)
             fake_images = G(g_fake_seed)
             output = fake_images.data
-            if do_lgan:
-                output = decode(ae, output)
+            output = decode(ae, output)
             imgs_numpy = output.cpu().detach().numpy()
             imgs_numpy = imgs_numpy.reshape(-1, 2048, 3)
 

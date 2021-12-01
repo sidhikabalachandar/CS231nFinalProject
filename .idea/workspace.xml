@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cd194ef0-befb-43ab-8d86-73fb0b919435" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AE_models/gan.py" beforeDir="false" afterPath="$PROJECT_DIR$/AE_models/gan.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/calculate_CD.py" beforeDir="false" afterPath="$PROJECT_DIR$/calculate_CD.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gan_train_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/gan_train_model.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -14,11 +13,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/calculate_CD.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="555">
-              <caret line="91" column="58" selection-start-line="91" selection-start-column="58" selection-end-line="91" selection-end-column="58" />
+            <state relative-caret-position="367">
+              <caret line="73" column="48" selection-start-line="73" selection-start-column="48" selection-end-line="73" selection-end-column="48" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/gan_train_model.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="741">
+              <caret line="58" column="102" selection-start-line="58" selection-start-column="102" selection-end-line="58" selection-end-column="102" />
+              <folding>
+                <element signature="e#0#12#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -26,8 +37,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/AE_models/gan.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="401" lean-forward="true" selection-start-line="401" selection-end-line="401" />
+            <state relative-caret-position="1178">
+              <caret line="420" column="12" selection-start-line="420" selection-start-column="12" selection-end-line="420" selection-end-column="12" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -86,11 +97,11 @@
         <option value="$PROJECT_DIR$/pointflow_train_model.py" />
         <option value="$PROJECT_DIR$/AE_models/flow.py" />
         <option value="$PROJECT_DIR$/AE_models/pointflow.py" />
-        <option value="$PROJECT_DIR$/gan_train_model.py" />
         <option value="$PROJECT_DIR$/maf_train_model.py" />
         <option value="$PROJECT_DIR$/AE_models/maf.py" />
-        <option value="$PROJECT_DIR$/AE_models/gan.py" />
         <option value="$PROJECT_DIR$/calculate_CD.py" />
+        <option value="$PROJECT_DIR$/gan_train_model.py" />
+        <option value="$PROJECT_DIR$/AE_models/gan.py" />
       </list>
     </option>
   </component>
@@ -336,13 +347,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/gan_train_model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="34" column="34" selection-end-line="69" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/chamfer_train_model.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="401">
@@ -366,20 +370,30 @@
     <entry file="file://$PROJECT_DIR$/499_epochs.png">
       <provider selected="true" editor-type-id="images" />
     </entry>
+    <entry file="file://$PROJECT_DIR$/calculate_CD.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="367">
+          <caret line="73" column="48" selection-start-line="73" selection-start-column="48" selection-end-line="73" selection-end-column="48" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/AE_models/gan.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="401" lean-forward="true" selection-start-line="401" selection-end-line="401" />
+        <state relative-caret-position="1178">
+          <caret line="420" column="12" selection-start-line="420" selection-start-column="12" selection-end-line="420" selection-end-column="12" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/calculate_CD.py">
+    <entry file="file://$PROJECT_DIR$/gan_train_model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="555">
-          <caret line="91" column="58" selection-start-line="91" selection-start-column="58" selection-end-line="91" selection-end-column="58" />
+        <state relative-caret-position="741">
+          <caret line="58" column="102" selection-start-line="58" selection-start-column="102" selection-end-line="58" selection-end-column="102" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
