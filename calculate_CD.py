@@ -1,6 +1,6 @@
 
-# python calculate_CD.py -m saved_models/lgan_train_soft/generator_499.pt -t splits/sofa/train.txt -y gan -a saved_models/pointnet_train_sofa/best_490.pt
-# python calculate_CD.py -m saved_models/maf_train_soft/MAF_499.pt -t splits/sofa/train.txt -y maf -a saved_models/pointnet_train_sofa/best_490.pt
+# python calculate_CD.py -m saved_models/lgan_train_sofa/generator_499.pt -t splits/sofa/train.txt -y gan -a saved_models/pointnet_train_sofa/best_490.pt
+# python calculate_CD.py -m saved_models/maf_train_sofa/MAF_499.pt -t splits/sofa/train.txt -y maf -a saved_models/pointnet_train_sofa/best_490.pt
 
 import torch
 import argparse
@@ -56,11 +56,10 @@ def main():
     elif args.type == "maf":
         example_fake = get_flow_data(model, ae, batch_size)
 
-    
-    example_real = trainloader[0][0] # get first batch of real examples
-    example_real = example_real.type(dtype)
-    example_real = torch.reshape(example_real, (-1, 2048, 3))
-
+    for example_real, _ in trainloader: # get first batch of real examples
+        example_real = example_real.type(dtype)
+        example_real = torch.reshape(example_real, (-1, 2048, 3))
+        break
 
     criterion = chamfer.chamfer_3DDist()
     
