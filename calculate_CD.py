@@ -23,17 +23,18 @@ def getCD(criterion, fake, real):
     dist = torch.mean(dist, dim=1)
     return dist
 
+
+def get_rgan_data(G, batch_size, noise_size, num_points):
+    g_fake_seed = sample_noise(batch_size, noise_size).type(dtype)
+    fake_images = G(g_fake_seed).reshape((batch_size, num_points, 3))
+    return fake_images
+ 
 def get_lgan_data(G, ae, batch_size, noise_size, num_points):
     g_fake_seed = sample_noise(batch_size, noise_size).type(dtype)
     fake_images = G(g_fake_seed)
     fake_images = decode(ae, fake_images).reshape((batch_size, num_points, 3))
     return fake_images
 
-def get_rgan_data(G, batch_size, noise_size, num_points):
-    g_fake_seed = sample_noise(batch_size, noise_size).type(dtype)
-    fake_images = G(g_fake_seed).reshape((batch_size, num_points, 3))
-    return fake_images
-    
 def get_flow_data(model, ae, batch_size, num_points):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     fake_images = model.sample(device, n=batch_size)
@@ -45,6 +46,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-r', '--rgan_model_name', required=True, help='Path to model (.pt).')
     parser.add_argument('-l', '--lgan_model_name',  required=True, help = 'Path to model (.pt).')
+    parser.add_argument('-w', '--wgan_model_name',  required=True, help = 'Path to model (.pt).')
     parser.add_argument('-f', '--flow_model_name', required=True, help='Path to model (.pt).')
     parser.add_argument('-t', '--train_path', required=True,  help='Path to training .txt file.')
     parser.add_argument('-a', '--ae_name',  required=True, help = 'Path to ae model (.pt).')
@@ -66,6 +68,9 @@ def main():
     lgan_model = torch.load(args.lgan_model_name)
     lgan_model.eval()
 
+    wgan_model = torch.load(args.wgan_model_name)
+    wgan_model.eval()
+
     flow_model = torch.load(args.flow_model_name)
     flow_model.eval()
 
@@ -73,6 +78,7 @@ def main():
 
     rgan_example_fake = get_rgan_data(rgan_model, fake_batch_size, noise_size, num_points)
     lgan_example_fake = get_lgan_data(lgan_model, ae, fake_batch_size, noise_size, num_points)
+    wgan_example_fake = get_wgan_data(wgan_model, ae, fake_batch_size, noise_size, num_points)
     flow_example_fake = get_flow_data(flow_model, ae, fake_batch_size, num_points)
     for i, (example, _) in enumerate(trainloader): # get first batch of real examples
         if i == 0:
@@ -87,15 +93,17 @@ def main():
     criterion = chamfer.chamfer_3DDist()
     rgan_average_CD = getCD(criterion, rgan_example_fake, example_real)
     lgan_average_CD = getCD(criterion, lgan_example_fake, example_real)
+    wgan_average_CD = getCD(criterion, wgan_example_fake, example_real)
     flow_average_CD = getCD(criterion, flow_example_fake, example_real)
     data_average_CD = getCD(criterion, data_example_fake, example_real)
     print('rGAN Average CD: {}'.format(torch.mean(rgan_average_CD)))
     print('lGAN Average CD: {}'.format(torch.mean(lgan_average_CD)))
+    print('wGAN Average CD: {}'.format(torch.mean(wgan_average_CD)))
     print('MAF Average CD: {}'.format(torch.mean(flow_average_CD)))
     print('Data Average CD: {}'.format(torch.mean(data_average_CD)))
 
-    types = ["rgan" for _ in range(fake_batch_size)] + ["lgan" for _ in range(fake_batch_size)] + ["maf" for _ in range(fake_batch_size)] + ["data" for _ in range(fake_batch_size)]
-    data = rgan_average_CD.tolist() + lgan_average_CD.tolist() + flow_average_CD.tolist() + data_average_CD.tolist()
+    types = ["rgan" for _ in range(fake_batch_size)] + ["lgan" for _ in range(fake_batch_size)] + ["wgan" for _ in range(fake_batch_size)] + ["maf" for _ in range(fake_batch_size)] + ["data" for _ in range(fake_batch_size)]
+    data = rgan_average_CD.tolist() + lgan_average_CD.tolist() + wgan_average_CD.tolist() + flow_average_CD.tolist() + data_average_CD.tolist()
     dict = {"type": types, "data": data}
     df = pd.DataFrame.from_dict(dict)
 
