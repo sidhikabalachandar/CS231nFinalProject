@@ -9,9 +9,14 @@ import ChamferDistancePytorch.chamfer3D.dist_chamfer_3D as chamfer
 from AE_models.gan import *
 from AE_models.maf import *
 
-def getCD(criterion, pc_1, pc_2):
-    dist1, dist2, _, _ = criterion(pc_1, pc_2)
+def getCD(criterion, fake, real):
+    batch_size = fake.size()[0]
+    rep_fake = torch.repeat_interleave(fake, batch_size, dim=0)
+    rep_real = real.repeat(batch_size, 1, 1)
+    dist1, dist2, _, _ = criterion(rep_fake, rep_real)
     dist = torch.sum(dist1 + dist2, axis = 1)
+    dist = dist.reshape((batch_size, batch_size))
+    dist = torch.mean(dist, dim=1)
     return dist
 
 def get_gan_data(G, ae, batch_size, noise_size, num_points):
@@ -63,23 +68,13 @@ def main():
             break
 
     criterion = chamfer.chamfer_3DDist()
-    fake = torch.repeat_interleave(gan_example_fake, batch_size, dim=0)
-    real = example_real.repeat(batch_size, 1, 1)
-    average_CD = getCD(criterion, fake, real).reshape((batch_size, batch_size))
-    print(torch.mean(average_CD, dim=0))
-    print(torch.mean(average_CD, dim=1))
-
-    average_CD = 0
-    for i in range(batch_size):
-        fake = gan_example_fake[i, :, :].repeat(batch_size, 1, 1)
-        val = torch.mean(getCD(criterion, fake, example_real))
-        print(val)
-        average_CD += val
-
-
-    # average_CD = getCD(criterion, flow_example_fake, example_real)
-    # average_CD = getCD(criterion, data_example_fake, example_real)
-    print('Average CD: {}'.format(average_CD / batch_size))
+    gan_average_CD = getCD(criterion, gan_example_fake, example_real)
+    flow_average_CD = getCD(criterion, flow_example_fake, example_real)
+    data_average_CD = getCD(criterion, data_example_fake, example_real)
+    print(gan_average_CD.size(), flow_average_CD.size(), data_average_CD.size())
+    print('GAN Average CD: {}'.format(torch.mean(gan_average_CD)))
+    print('MAF Average CD: {}'.format(torch.mean(flow_average_CD)))
+    print('Data Average CD: {}'.format(torch.mean(data_average_CD)))
 
 if __name__ == "__main__":
     main()
