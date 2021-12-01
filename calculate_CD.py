@@ -1,5 +1,5 @@
 
-# python calculate_CD.py -g saved_models/lgan_train_sofa/generator_499.pt -f saved_models/maf_train_sofa/MAF_499.pt -t splits/sofa/train.txt -a saved_models/pointnet_train_sofa/best_490.pt -n 499_epochs
+# python calculate_CD.py -g saved_models/lgan_train_sofa/generator_49.pt -f saved_models/maf_train_sofa/MAF_49.pt -t splits/sofa/train.txt -a saved_models/pointnet_train_sofa/best_490.pt -n 49_epochs
 
 import torch
 import argparse
@@ -38,7 +38,8 @@ def get_flow_data(model, ae, batch_size, num_points):
 def main():
     # Parse Arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument('-g', '--gan_model_name',  required=True, help = 'Path to model (.pt).')
+    parser.add_argument('-r', '--rgan_model_name', required=True, help='Path to model (.pt).')
+    parser.add_argument('-l', '--lgan_model_name',  required=True, help = 'Path to model (.pt).')
     parser.add_argument('-f', '--flow_model_name', required=True, help='Path to model (.pt).')
     parser.add_argument('-t', '--train_path', required=True,  help='Path to training .txt file.')
     parser.add_argument('-a', '--ae_name',  required=True, help = 'Path to ae model (.pt).')
@@ -54,15 +55,19 @@ def main():
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=real_batch_size, shuffle=True, num_workers=2)
 
     # Load Model
-    gan_model = torch.load(args.gan_model_name)
-    gan_model.eval()
+    rgan_model = torch.load(args.rgan_model_name)
+    rgan_model.eval()
+
+    lgan_model = torch.load(args.lgan_model_name)
+    lgan_model.eval()
 
     flow_model = torch.load(args.flow_model_name)
     flow_model.eval()
 
     ae = load_ae(args.ae_name)
 
-    gan_example_fake = get_gan_data(gan_model, ae, fake_batch_size, noise_size, num_points)
+    rgan_example_fake = get_gan_data(rgan_model, ae, fake_batch_size, noise_size, num_points)
+    lgan_example_fake = get_gan_data(lgan_model, ae, fake_batch_size, noise_size, num_points)
     flow_example_fake = get_flow_data(flow_model, ae, fake_batch_size, num_points)
     for i, (example, _) in enumerate(trainloader): # get first batch of real examples
         if i == 0:
@@ -75,18 +80,19 @@ def main():
             break
 
     criterion = chamfer.chamfer_3DDist()
-    gan_average_CD = getCD(criterion, gan_example_fake, example_real)
+    rgan_average_CD = getCD(criterion, rgan_example_fake, example_real)
+    lgan_average_CD = getCD(criterion, lgan_example_fake, example_real)
     flow_average_CD = getCD(criterion, flow_example_fake, example_real)
     data_average_CD = getCD(criterion, data_example_fake, example_real)
-    print('GAN Average CD: {}'.format(torch.mean(gan_average_CD)))
+    print('rGAN Average CD: {}'.format(torch.mean(rgan_average_CD)))
+    print('lGAN Average CD: {}'.format(torch.mean(lgan_average_CD)))
     print('MAF Average CD: {}'.format(torch.mean(flow_average_CD)))
     print('Data Average CD: {}'.format(torch.mean(data_average_CD)))
 
-    types = ["gan" for _ in range(fake_batch_size)] + ["maf" for _ in range(fake_batch_size)] + ["data" for _ in range(fake_batch_size)]
-    data = gan_average_CD.tolist() + flow_average_CD.tolist() + data_average_CD.tolist()
+    types = ["rgan" for _ in range(fake_batch_size)] + ["lgan" for _ in range(fake_batch_size)] + ["maf" for _ in range(fake_batch_size)] + ["data" for _ in range(fake_batch_size)]
+    data = rgan_average_CD.tolist() + lgan_average_CD.tolist() + flow_average_CD.tolist() + data_average_CD.tolist()
     dict = {"type": types, "data": data}
     df = pd.DataFrame.from_dict(dict)
-    print(df)
 
     sns.histplot(data=df, x="data", hue="type", element="poly")
     plt.savefig('{}.png'.format(args.graph_name))
