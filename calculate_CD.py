@@ -66,7 +66,7 @@ def main():
             example_real = torch.reshape(example_real, (-1, 2048, 3))
         if i == 1:
             data_example_fake = example.type(dtype)
-            data_example_fake = data_example_fake[:fake_batch_size, :, :]
+            data_example_fake = data_example_fake[:fake_batch_size, :]
             data_example_fake = torch.reshape(data_example_fake, (-1, 2048, 3))
             break
 
