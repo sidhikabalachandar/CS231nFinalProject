@@ -105,12 +105,12 @@ def main():
     print('MAF Average CD: {}'.format(torch.mean(flow_average_CD)))
     print('Data Average CD: {}'.format(torch.mean(data_average_CD)))
 
-    types = ["lgan" for _ in range(fake_batch_size)] + ["wgan" for _ in range(fake_batch_size)] + ["maf" for _ in range(fake_batch_size)] + ["data" for _ in range(fake_batch_size)]
+    types = ["l-GAN" for _ in range(fake_batch_size)] + ["Wasserstein l-GAN" for _ in range(fake_batch_size)] + ["l-MAF" for _ in range(fake_batch_size)] + ["Data" for _ in range(fake_batch_size)]
     data = lgan_average_CD.tolist() + wgan_average_CD.tolist() + flow_average_CD.tolist() + data_average_CD.tolist()
     dict = {"type": types, "data": data}
     df = pd.DataFrame.from_dict(dict)
 
-    sns.histplot(data=df, x="data", hue="type", element="poly")
+    sns.histplot(data=df, x="Average Chamfer Distance", hue="type", element="poly")
     plt.savefig('{}.png'.format(args.graph_name))
 
 
