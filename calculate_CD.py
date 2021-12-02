@@ -110,7 +110,8 @@ def main():
     dict = {"type": types, "data": data}
     df = pd.DataFrame.from_dict(dict)
 
-    sns.histplot(data=df, x="Average Chamfer Distance", hue="type", element="poly")
+    sns.histplot(data=df, x="data", hue="type", element="poly")
+    plt.xlabel("Average Chamfer Distance")
     plt.savefig('{}.png'.format(args.graph_name))
 
 
