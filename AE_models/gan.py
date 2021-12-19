@@ -6,32 +6,11 @@ import open3d as o3d
 dtype = torch.cuda.FloatTensor if torch.cuda.is_available() else torch.FloatTensor
 
 
-def sample_noise(batch_size, dim, seed=None):
-    """
-    Generate a PyTorch Tensor of uniform random noise.
-
-    Input:
-    - batch_size: Integer giving the batch size of noise to generate.
-    - dim: Integer giving the dimension of noise to generate.
-
-    Output:
-    - A PyTorch Tensor of shape (batch_size, dim) containing uniform
-      random noise in the range (-1, 1).
-    """
-    if seed is not None:
-        torch.manual_seed(seed)
-
+def sample_noise(batch_size, dim):
     return torch.normal(0, 0.2, (batch_size, dim))
 
 
-def rgan_discriminator(input_dim=3, seed=None):
-    """
-    Build and return a PyTorch model implementing the architecture above.
-    """
-
-    if seed is not None:
-        torch.manual_seed(seed)
-
+def rgan_discriminator(input_dim=3):
     # input  : (N, 3, 2048)
     # output : (N, 1)
 
@@ -57,14 +36,7 @@ def rgan_discriminator(input_dim=3, seed=None):
     )
     return model
 
-def lgan_discriminator(input_dim=128, seed=None):
-    """
-    Build and return a PyTorch model implementing the architecture above.
-    """
-
-    if seed is not None:
-        torch.manual_seed(seed)
-
+def lgan_discriminator(input_dim=128):
     # input  : (N, 3, 2048)
     # output : (N, 1)
 
@@ -81,14 +53,7 @@ def lgan_discriminator(input_dim=128, seed=None):
     return model
 
 
-def rgan_generator(noise_dim=128, seed=None):
-    """
-    Build and return a PyTorch model implementing the architecture above.
-    """
-
-    if seed is not None:
-        torch.manual_seed(seed)
-
+def rgan_generator(noise_dim=128):
     model = nn.Sequential(
         nn.Linear(noise_dim, 64),
         nn.BatchNorm1d(64),
@@ -104,14 +69,7 @@ def rgan_generator(noise_dim=128, seed=None):
     return model
 
 
-def lgan_generator(noise_dim=128, seed=None):
-    """
-    Build and return a PyTorch model implementing the architecture above.
-    """
-
-    if seed is not None:
-        torch.manual_seed(seed)
-
+def lgan_generator(noise_dim=128):
     model = nn.Sequential(
         nn.Linear(noise_dim, 128),
         nn.BatchNorm1d(128),
@@ -122,36 +80,12 @@ def lgan_generator(noise_dim=128, seed=None):
 
 
 def bce_loss(input, target):
-    """
-    Numerically stable version of the binary cross-entropy loss function.
-
-    As per https://github.com/pytorch/pytorch/issues/751
-    See the TensorFlow docs for a derivation of this formula:
-    https://www.tensorflow.org/api_docs/python/tf/nn/sigmoid_cross_entropy_with_logits
-
-    Inputs:
-    - input: PyTorch Tensor of shape (N, ) giving scores.
-    - target: PyTorch Tensor of shape (N,) containing 0 and 1 giving targets.
-
-    Returns:
-    - A PyTorch Tensor containing the mean BCE loss over the minibatch of input data.
-    """
     neg_abs = - input.abs()
     loss = input.clamp(min=0) - input * target + (1 + neg_abs.exp()).log()
     return loss.mean()
 
 
 def discriminator_loss(logits_real, logits_fake):
-    """
-    Computes the discriminator loss described above.
-
-    Inputs:
-    - logits_real: PyTorch Tensor of shape (N,) giving scores for the real data.
-    - logits_fake: PyTorch Tensor of shape (N,) giving scores for the fake data.
-
-    Returns:
-    - loss: PyTorch Tensor containing (scalar) the loss for the discriminator.
-    """
     N = logits_real.size()
     true_labels = torch.ones(N).type(dtype)
     false_labels = torch.zeros(N).type(dtype)
@@ -163,15 +97,6 @@ def discriminator_loss(logits_real, logits_fake):
 
 
 def generator_loss(logits_fake):
-    """
-    Computes the generator loss described above.
-
-    Inputs:
-    - logits_fake: PyTorch Tensor of shape (N,) giving scores for the fake data.
-
-    Returns:
-    - loss: PyTorch Tensor containing the (scalar) loss for the generator.
-    """
     N = logits_fake.size()
     true_labels = torch.ones(N).type(dtype)
     loss = bce_loss(logits_fake, true_labels)
@@ -180,16 +105,6 @@ def generator_loss(logits_fake):
 
 
 def loss_wasserstein_gp_d(g, d, x_real, noise_size, device):
-    """
-    Arguments:
-    - g (codebase.network.Generator): The generator network
-    - d (codebase.network.Discriminator): The discriminator network
-      - Note that d outputs value of discriminator
-    - x_real (torch.Tensor): training data samples (64, 128)
-
-    Returns:
-    - d_loss (torch.Tensor): wasserstein discriminator loss
-    """
     batch_size = x_real.shape[0]
     z = sample_noise(batch_size, noise_size).type(dtype)
 
@@ -208,17 +123,6 @@ def loss_wasserstein_gp_d(g, d, x_real, noise_size, device):
 
 
 def loss_wasserstein_gp_g(g, d, x_real, noise_size):
-    """
-    Arguments:
-    - g (codebase.network.Generator): The generator network
-    - d (codebase.network.Discriminator): The discriminator network
-      - Note that d outputs value of discriminator
-    - x_real (torch.Tensor): training data samples (64, 128)
-    - device (torch.device): 'cpu' by default
-
-    Returns:
-    - g_loss (torch.Tensor): wasserstein generator loss
-    """
     batch_size = x_real.shape[0]
     z = sample_noise(batch_size, noise_size).type(dtype)
 
@@ -264,21 +168,6 @@ def decode(model, latent_code):
 def run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, loader_train, do_lgan, ae_name,
                 show_every=250, batch_size=128, noise_size=96, num_epochs=10, saved_models="saved_models", 
                 folder_name="folder_name", path_loss="path_loss", generated_samples_folder="Generated_Samples"):
-    """
-    Train a GAN!
-
-    Inputs:
-    - D, G: PyTorch models for the discriminator and generator
-    - D_solver, G_solver: torch.optim Optimizers to use for training the
-      discriminator and generator.
-    - discriminator_loss, generator_loss: Functions to use for computing the generator and
-      discriminator loss, respectively.
-    - show_every: Show samples after every show_every iterations.
-    - batch_size: Batch size to use for training.
-    - noise_size: Dimension of the noise to use as input to the generator.
-    - num_epochs: Number of epochs over the training dataset to use for training.
-    """
-
     file_handle = open(path_loss, "a")
 
     os.makedirs(os.path.join(saved_models, folder_name), exist_ok=True)
@@ -360,21 +249,6 @@ def run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, load
 def run_a_wgan(D, G, D_solver, G_solver, d_loss, g_loss, loader_train, ae_name, device,
                 show_every=250, batch_size=128, noise_size=96, num_epochs=10, saved_models="saved_models",
                 folder_name="folder_name", path_loss="path_loss", generated_samples_folder="Generated_Samples"):
-    """
-    Train a GAN!
-
-    Inputs:
-    - D, G: PyTorch models for the discriminator and generator
-    - D_solver, G_solver: torch.optim Optimizers to use for training the
-      discriminator and generator.
-    - discriminator_loss, generator_loss: Functions to use for computing the generator and
-      discriminator loss, respectively.
-    - show_every: Show samples after every show_every iterations.
-    - batch_size: Batch size to use for training.
-    - noise_size: Dimension of the noise to use as input to the generator.
-    - num_epochs: Number of epochs over the training dataset to use for training.
-    """
-
     file_handle = open(path_loss, "a")
 
     os.makedirs(os.path.join(saved_models, folder_name), exist_ok=True)
