@@ -4,8 +4,7 @@ Recently, 3D point clouds have become the preferred method for several geometric
 
 To this end, in our CS 231N project we try to understand the latent space that point clouds live in and in our CS 236 project we aim to generate new point clouds from this learned latent space. For more detail please refer to the full reports below.
 
-[CS 231N Final Report](pdf_folder/CS231N_FinalReport.pdf)
-[CS 236 Final Report](pdf_folder/CS236_Project_Final_Report.pdf)
+[CS 231N Final Report](pdf_folder/CS231N_FinalReport.pdf), [CS 236 Final Report](pdf_folder/CS236_Project_Final_Report.pdf)
 
 By: Sidhika Balachander, Samaksh Goyal in 2021.
 
