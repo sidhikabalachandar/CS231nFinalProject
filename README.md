@@ -5,8 +5,9 @@ Recently, 3D point clouds have become the preferred method for several geometric
 To this end, in our CS 231N project we try to understand the latent space that point clouds live in and in our CS 236 project we aim to generate new point clouds from this learned latent space. For more detail please refer to the full reports below.
 
 [CS 231N Final Report](pdf_folder/CS231N_FinalReport.pdf)
-
 [CS 236 Final Report](pdf_folder/CS236_Project_Final_Report.pdf)
+
+By: Sidhika Balachander, Samaksh Goyal in 2021.
 
 <!-- # Layout
 
@@ -67,7 +68,7 @@ AE_models folder -- folder with different AE models
 
 When we visualized the results for a car point cloud that was present in the train set, we are able to almost fully recover the original shape. Most interestingly we conserve small domain specific details like the curvature of the wheels of the car, however we lose the the rigid structure of the truck bed which now has a softer profile. As a test we try to visualize an airplane and the model is able to get a reasonable approximation that matches the general frame and span of the wings. However during testing we lose many details like the nose angle and the 4 engines beneath the wings. We can see that the autoencoder is struggling with this since it produces a heavier set of point clouds where the engines should be, however it does not recover their cylindrical shape.
 
-![Auto Encoder Validation](pdf_folder/AE_validation.png)
+![Auto Encoder Validation](pdf_folder/AEvalidation.png)
 
 ## Latent Space Analysis
 
