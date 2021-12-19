@@ -165,7 +165,7 @@ def decode(model, latent_code):
     return x
 
 def run_a_maf(maf_model, maf_optimizer, loader_train, ae_name, device,
-              show_every=250, batch_size=128, num_epochs=10, saved_models="saved_models",
+              batch_size=128, num_epochs=10, saved_models="saved_models",
               folder_name="folder_name", path_loss="path_loss", generated_samples_folder="Generated_Samples"):
 
     file_handle = open(path_loss, "a")
