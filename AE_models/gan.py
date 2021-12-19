@@ -1,3 +1,5 @@
+# adapted from code provided in Stanford CS231N and CS236
+
 import os
 import torch
 import torch.nn as nn
